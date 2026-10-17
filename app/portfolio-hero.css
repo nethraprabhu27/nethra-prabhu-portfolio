@@ -1,0 +1,832 @@
+/* Screen-relative sizes go through --vw / --vh. Normally they're 1vw / 1svh; on laptop and desktop screens (1024px+),
+   the page is laid out at a 1440x900 design size and scaled to fit (set by the script in the layout), so it looks
+   identical, just larger or smaller, whatever the screen size. */
+:root { --vw: 1vw; --vh: 1svh; }
+/* Size shared by the section headings (Project Snapshots, Experiences and Outcomes, What I'm Exploring's sub-headings,
+   Let's Connect): fixed, so resizing the hero doesn't change them. On laptops the page is laid out at 1440px and scaled. */
+:root { --section-head-size: 35.5px; }
+@media (min-width: 701px) and (max-width: 1023px) { :root { --section-head-size: clamp(18px, 3.47vw, 35.5px); } }
+@media (max-width: 700px) { :root { --section-head-size: 18px; } }
+:root { color-scheme: dark; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #000; color: #f4eedf; }
+.pond-hero { font-family: Arial, Helvetica, sans-serif; }
+/* The hero hugs its content (min: half the viewport less 2in). */
+.pond-hero { --name-top: calc(clamp(185px, calc(24 * var(--vh)), 285px) - 170px + .5in); --name-size: clamp(38px, calc(6.75 * var(--vw)), 120px);
+  /* drawn above the sections after it, so its fixed menu stays on top of their raised cards and titles */
+  position: relative; z-index: 10; min-height: calc(calc(50 * var(--vh)) - 2in); overflow-x: clip; overflow-y: visible; isolation: isolate; background: #08141a; }
+.pond-background { position: absolute; inset: 0; z-index: -4; background: url('/art/koi-pond-background.png') center center / cover no-repeat; }
+.pond-vignette { position: absolute; inset: 0; z-index: -3; background: linear-gradient(180deg, rgba(3,12,15,.48), transparent 24%, rgba(3,12,15,.22) 70%, rgba(3,12,15,.75)), radial-gradient(ellipse 55% 38% at 50% 38%, rgba(2,14,18,.66), transparent 100%); }
+/* Orange-tree branches framing the hero (transparent cut-outs, so the hero colour shows between them).
+   Left: pinned to the top-left corner, 37.5% of the hero's width. */
+.hero-branches { position: absolute; top: 0; left: 0; right: 0; aspect-ratio: 1280 / 540; z-index: -2; pointer-events: none;
+  background: url('/art/orange-branches-left.webp') left top / 37.5% auto no-repeat; }
+/* Right: runs from the hero's top to --peek below its bottom edge, with the tree filling that height, so its branch
+   still starts at the top and the leaves under its lowest orange always hang over into the Featured section. */
+.hero-branches-right { --peek: clamp(40px, calc(5 * var(--vw)), 80px); position: absolute; top: 0; right: 0; height: calc(100% + var(--peek)); aspect-ratio: 1280 / 1121;
+  max-width: 50%; z-index: -2; pointer-events: none; }
+/* The right tree's picture (1280x1121, its lowest orange cut out), anchored to the box's bottom-right. */
+.hero-branches-right .tree-art { position: absolute; right: 0; bottom: 0; width: 100%; aspect-ratio: 1280 / 1121;
+  background: url('/art/orange-branches-right-sway.webp') center / 100% 100% no-repeat; }
+/* Its lowest orange, placed exactly where it was cut from (the 320x374 box at 960,496 in the picture), pivoting on its
+   stem's tip (130,8 in that box). */
+.dangling-orange { position: absolute; left: 75%; top: 44.246%; width: 25%; height: 33.363%;
+  background: url('/art/dangling-orange.webp') center / 100% 100% no-repeat; transform-origin: 40.625% 2.139%; }
+
+/* Each time the hero is scrolled to (the page adds .is-dropping): the right tree shakes, and an orange hidden behind its
+   leaves drops out and falls away. (Phones: see the phone section; the orange falls through the black hero only.) */
+.falling-orange { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .pond-hero.is-dropping .hero-branches-right { transform-origin: 100% 0; animation: tree-shake 1.3s ease-in-out .3s both; }
+  .pond-hero.is-dropping .falling-orange { display: block; position: absolute; left: 50%; top: 18%; width: 15%; aspect-ratio: 320 / 374;
+    background: url('/art/dangling-orange.webp') center / 100% 100% no-repeat; animation: orange-fall 1.5s .55s both; }
+}
+@keyframes tree-shake { 0%, 100% { rotate: 0deg; } 12% { rotate: 2.2deg; } 26% { rotate: -1.8deg; } 40% { rotate: 1.5deg; } 54% { rotate: -1deg; }
+  68% { rotate: .6deg; } 82% { rotate: -.3deg; } }
+/* It wobbles loose, then drops (speeding up as it falls), turning as it goes, past the hero's bottom edge, and fades. */
+@keyframes orange-fall-phone {
+  0% { top: 18%; rotate: 0deg; }
+  18% { top: 19%; rotate: -10deg; animation-timing-function: cubic-bezier(.5, 0, .9, .5); }
+  100% { top: 320%; rotate: 85deg; } }
+@keyframes orange-fall {
+  0% { top: 18%; rotate: 0deg; opacity: 1; }
+  18% { top: 19%; rotate: -10deg; opacity: 1; animation-timing-function: cubic-bezier(.5, 0, .9, .5); }
+  85% { top: 115%; rotate: 70deg; opacity: 1; }
+  100% { top: 128%; rotate: 85deg; opacity: 0; } }
+/* Wind: one gust every 60 seconds. Each tree sways from the corner it hangs from (rotate) with a quick leafy shiver
+   (scale), then settles and stays still until the next gust; the right tree catches it a moment after the left. The
+   lowest right orange is knocked into a swing on its stem that dies away. */
+@keyframes branch-sway { 0% { rotate: 0deg; } 0.75% { rotate: 1.2deg; } 1.583% { rotate: .3deg; } 2.417% { rotate: 1deg; } 3.333% { rotate: .2deg; } 4.332%, 100% { rotate: 0deg; } }
+/* The right tree leans the other way (it hangs from the opposite corner). */
+@keyframes branch-sway-right { 0% { rotate: 0deg; } 0.75% { rotate: -1.2deg; } 1.583% { rotate: -.3deg; } 2.417% { rotate: -1deg; } 3.333% { rotate: -.2deg; } 4.332%, 100% { rotate: 0deg; } }
+@keyframes branch-rustle { 0%, 4.332%, 100% { scale: 1; } 0.5% { scale: 1.006 .997; } 1.083% { scale: .997 1.005; } 1.667% { scale: 1.005 .998; } 2.25% { scale: .998 1.004; }
+  2.833% { scale: 1.003 1; } 3.5% { scale: 1 1.002; } }
+@keyframes orange-dangle { 0% { rotate: 0deg; } 0.917% { rotate: 6deg; } 1.917% { rotate: -4deg; } 2.917% { rotate: 2.5deg; } 3.917% { rotate: -1.2deg; }
+  4.832% { rotate: .4deg; } 5.5%, 100% { rotate: 0deg; } }
+.hero-branches { transform-origin: 0 0; animation: branch-sway 60s ease-in-out infinite, branch-rustle 60s ease-in-out infinite; }
+/* The dangling orange shakes when touched (tap, or hover/click on desktop; the page adds .is-shaking): a quick jiggle on
+   top of its usual swing. */
+.orange-hit { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@keyframes orange-shake { 0%, 100% { transform: rotate(0deg) scale(1); } 15% { transform: rotate(-11deg) scale(1.05); } 32% { transform: rotate(9deg) scale(1.05); }
+  48% { transform: rotate(-6deg) scale(1.04); } 64% { transform: rotate(4deg) scale(1.03); } 80% { transform: rotate(-2deg) scale(1.01); } }
+.dangling-orange.orange-hit.is-shaking { animation: orange-dangle 60s ease-in-out .45s infinite, orange-shake .65s ease-in-out; }
+.hero-branches-right .tree-art { transform-origin: 100% 0; animation: branch-sway-right 60s ease-in-out .35s infinite, branch-rustle 60s ease-in-out .35s infinite; }
+.dangling-orange { animation: orange-dangle 60s ease-in-out .45s infinite; }
+.pond-nav { position: absolute; top: 0; left: 0; right: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; padding: 36px clamp(22px, calc(5.2 * var(--vw)), 88px); min-height: 36px; }
+/* The nav's empty band lets touches through (to the tree behind it); only the logo and menu take them. */
+.pond-nav { pointer-events: none; }
+.pond-nav a, .pond-nav .nav-links { pointer-events: auto; }
+.pond-nav a { color: #f4eedf; text-decoration: none; }
+/* Logo tucked into the top-left corner, vertically centred on the nav links' line. */
+.brand { position: absolute; top: 50%; left: 20px; translate: 0 -50%; display: block; width: 50px; transition: scale .2s ease; }
+.brand:hover, .brand:focus-visible { scale: 1.1; }
+.brand img { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,.45)); }
+/* The menu is pinned to the screen (top-right on desktop) so it's always there. Press it and slide along it to
+   move between sections, or click an item. */
+.nav-links { position: fixed; top: 36px; right: clamp(22px, calc(5.2 * var(--vw)), 88px); z-index: 50; display: flex; gap: clamp(2px, calc(.6 * var(--vw)), 10px); align-items: center;
+  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  transition: scale .25s cubic-bezier(.22,1,.36,1), background-color .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.nav-links a { position: relative; z-index: 1; padding: 6px clamp(8px, calc(1 * var(--vw)), 16px); border-radius: 999px; transition: color .2s; -webkit-tap-highlight-color: transparent; }
+/* Pages stop with their inner targets (About, Contact) clear of the pinned menu. */
+.pond-hero [id], .page-section [id], .contact-section [id] { scroll-margin-top: 100px; }
+.nav-links a:hover { color: #c8a96b; }
+.pond-decor { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.lotus-leaf { position: absolute; width: 120px; opacity: .81; filter: drop-shadow(0 12px 16px rgba(0,0,0,.35)); }
+.lotus-leaf img { width: 100%; height: auto; }
+/* In the page flow (not absolute), so the hero grows to fit the name, headshot and about. */
+.hero-copy { z-index: 5; position: relative; padding: var(--name-top) 20px 0; display: flex; flex-direction: column; align-items: center; text-align: center; pointer-events: none; }
+.hero-copy h1 { color: #f4eedf; font-size: var(--name-size); line-height: .99; font-weight: 850; letter-spacing: -.075em; white-space: nowrap; text-shadow: 0 3px 30px rgba(0,0,0,.35); margin: 0; }
+/* The tight letter-spacing also trims space after the last letter, which nudges the letters right of centre; pad it back. */
+.hero-copy h1 { padding-right: .075em; }
+/* Black border closing off the bottom of the hero; the lily pads float over it. */
+.pond-hero::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; z-index: 0; pointer-events: none; background: #000; }
+/* Scene theme: the illustrated desk behind the hero, darkened toward the top where the name and
+   nav sit, and fading into the black page at the bottom. Uses the default (light-on-dark) text styles. */
+.hero-scene { position: absolute; inset: 0; z-index: -4; background: url('/art/hero-desk-scene.webp') center 62% / cover no-repeat; }
+/* Animated version of the same picture (plants swaying in the wind); the still picture shows until it's ready. */
+.hero-scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .5s ease; }
+.hero-scene-canvas.is-live { opacity: 1; }
+.hero-scene::after { content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(5,4,14,.72) 0%, rgba(5,4,14,.45) 38%, rgba(5,4,14,.25) 70%, rgba(0,0,0,.85) 100%); }
+body:has(.theme-scene) { background: #000; }
+/* Faint dark outline plus a layered shadow so the name separates from the busy picture: a tight dark edge, a soft drop and a wide halo. */
+.theme-scene .hero-copy h1 { -webkit-text-stroke: 1.5px rgba(0,0,0,.55); paint-order: stroke fill;
+  text-shadow: 0 2px 3px rgba(0,0,0,.85), 0 6px 16px rgba(0,0,0,.75), 0 16px 44px rgba(0,0,0,.7), 0 0 90px rgba(0,0,0,.6); }
+/* Light theme: the page and hero are plain white, with the name, nav and logo in black. */
+:root:has(.theme-light) { color-scheme: light; }
+body:has(.theme-light) { background: #fff; color: #000; }
+.pond-hero.theme-light { background: #fff; }
+.theme-light::after { display: none; }
+.theme-light .pond-nav a { color: #000; }
+.theme-light .nav-links a:hover { color: #8a6a2c; }
+.theme-light .brand img { filter: brightness(0); }
+.theme-light .hero-copy h1 { color: #000; text-shadow: none; }
+/* With the orange branches behind the hero: a soft white halo keeps the name and logo readable where they cross the
+   leaves, and the menu sits on a frosted white pill. */
+.pond-hero:has(.hero-branches) .hero-copy h1 { text-shadow: 0 0 14px #fff, 0 0 28px #fff, 0 0 56px rgba(255,255,255,.9); }
+.theme-light:has(.hero-branches) .brand img { filter: brightness(0) drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #fff); }
+.pond-hero:has(.hero-branches) .nav-links { padding: 4px 6px; border-radius: 999px; background: rgba(255,255,255,.8);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+/* Dark theme: a plain black hero with the name in white; the rest of the hero uses the default light-on-dark text. */
+.pond-hero.theme-dark { background: #000; }
+/* (no extra black below the description: the band under it carries on the black) */
+.pond-hero { padding-bottom: 0; }
+/* No bottom strip: it would draw a hard band across the leaves hanging over the edge. */
+.theme-dark::after { display: none; }
+.theme-dark .hero-copy h1 { color: #fff; }
+/* With the branches on black: a dark halo (not a white one) where the name and about cross the leaves, and a dark frosted menu. */
+.theme-dark:has(.hero-branches) .hero-copy h1 { text-shadow: 0 0 14px #000, 0 0 28px #000, 0 0 56px rgba(0,0,0,.9); }
+.theme-dark:has(.hero-branches) .hero-about p { text-shadow: 0 0 4px #000, 0 0 10px #000, 0 0 18px #000; }
+.theme-dark:has(.hero-branches) .nav-links { background: rgba(0,0,0,.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.18); box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+.theme-dark .nav-links a:hover { color: #f0a85a; }
+/* Highlight that slides along the menu to the item being pressed, or the section you're in. */
+.nav-indicator { position: absolute; top: 4px; bottom: 4px; left: 0; width: 0; border-radius: 999px; opacity: 0; background: rgba(255,255,255,.2);
+  transition: left .22s cubic-bezier(.22,1,.36,1), width .22s cubic-bezier(.22,1,.36,1), opacity .2s, background-color .25s; }
+.nav-indicator.is-on { opacity: 1; }
+.theme-light .nav-indicator { background: rgba(0,0,0,.1); }
+/* Desktop: hovering (or dragging) the menu inverts its colours and grows it a little. */
+@media (hover: hover) and (min-width: 701px) {
+  .pond-hero .nav-links:hover, .pond-hero .nav-links.is-dragging { scale: 1.08; background: #f4eedf; border-color: #f4eedf; box-shadow: 0 10px 28px rgba(0,0,0,.45); }
+  .pond-hero .nav-links:hover a, .pond-hero .nav-links.is-dragging a { color: #0a0816; }
+  .pond-hero .nav-links:hover a:hover { color: #b5530d; }
+  .pond-hero .nav-links:hover .nav-indicator, .pond-hero .nav-links.is-dragging .nav-indicator { background: rgba(0,0,0,.12); }
+  .theme-light .nav-links:hover, .theme-light .nav-links.is-dragging { background: #000; border-color: #000; }
+  .theme-light .nav-links:hover a, .theme-light .nav-links.is-dragging a { color: #fff; }
+  .theme-light .nav-links:hover a:hover { color: #f0a85a; }
+  .theme-light .nav-links:hover .nav-indicator, .theme-light .nav-links.is-dragging .nav-indicator { background: rgba(255,255,255,.22); }
+}
+.nowrap { white-space: nowrap; }
+/* Name plus the row under it. The row is sized to zero and then stretched, so the name alone decides the width
+   and the headshot lines up under its left edge, with the about filling the rest. */
+.hero-head { display: flex; flex-direction: column; width: fit-content; max-width: 100%; }
+.hero-intro { width: 0; min-width: 100%; display: flex; align-items: flex-start; gap: clamp(14px, calc(1.5 * var(--vw)), 24px);
+  margin: clamp(6px, calc(.7 * var(--vw)), 12px) 0 clamp(20px, calc(2 * var(--vw)), 28px); text-align: left; }
+/* Headshot: a circle, sized to stay within the about's height so the hero (and its black) ends just below the about. */
+.headshot { flex: 0 0 auto; display: block; width: clamp(120px, calc(12 * var(--vw)), 190px); height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.45); pointer-events: auto; }
+/* Short "about" blurb beside the headshot, closing out the hero. */
+.hero-about { pointer-events: auto; flex: 1 1 0; min-width: 0; container-type: inline-size; }
+.hero-about p { margin: 0; font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-size: clamp(16px, calc(1.2 * var(--vw)), 19px); line-height: 1.65; }
+/* "Read more" for the description: only used on phones (see the phone section). */
+.about-ellipsis, .about-toggle { display: none; }
+/* The hero's "from raw ideas -> real impact" line: written in marker (Permanent Marker), all capitals, in the yellow-orange of the
+   oranges' lit sides. */
+.hero-about .section-kicker { font-family: var(--font-marker), 'Comic Sans MS', cursive; white-space: nowrap;
+  /* Sized to fill the column's width on one line: --kicker-ratio is how many times wider the text is than its font size. */
+  --kicker-ratio: 18.28; font-size: calc(98cqi / var(--kicker-ratio)); font-weight: 400;
+  letter-spacing: .01em; line-height: 1.2; text-transform: uppercase; color: #b7f774; opacity: 1; margin-bottom: 10px; }
+
+/* The page's three parts: hero, Featured, then Experience & Impact (with Contact below it).
+   Each part gets its own background so the split is easy to see. */
+.page-section { box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: clamp(40px, calc(5 * var(--vw)), 72px);
+  padding: clamp(64px, calc(8 * var(--vw)), 120px) clamp(20px, calc(6 * var(--vw)), 88px); font-family: Arial, Helvetica, sans-serif; }
+.page-section > * { width: min(100%, 1120px); }
+.featured-section { background: #f4f1ea; color: #111; }
+/* Everything after the about section is white (apart from the black band behind Ideas I'm Exploring). */
+.featured-section:has(.snapshots-row) { background: #fff; }
+/* in a bright orange-red */
+.section-title.featured-title#featured-title { color: #f2491b; position: relative; z-index: 2; }
+/* Featured starts right under the black hero, with its "Project Snapshots" heading (and Experience's heading) in marker, all capitals, the same
+   --section-head-size (the size the hero's "from raw ideas -> real impact" line had before the hero was made smaller). */
+/* (a little extra room above the title) */
+.featured-section { --ps-pad: clamp(8px, calc(.85 * var(--vw)), 12px); padding-top: calc(var(--ps-pad) + clamp(6px, calc(.6 * var(--vw)), 10px)); }
+/* Experiences and Outcomes: a white section, at least 3 inches tall (taller to fit its card box), with centered dark
+   text; its heading is marker, the size of "Project Highlights" (that of the hero's "from raw ideas" line). */
+.experience-section { padding-top: clamp(8px, calc(.8 * var(--vw)), 12px); min-height: 3in; box-sizing: border-box;
+  background: #fff; color: #111; text-align: center; }
+/* the copy of the "I'm interested in" box under the heading keeps its cards' text left-aligned, as in the original */
+/* Under the Experiences heading: a short summary and a "Download résumé" button with a download arrow, styled like the green
+   boxes under "Clinical Education Hub" (same green, dark outline, corners and lettering), turning black on hover. The summary is lettered like the Project Highlights summary ("A centralized learning platform…"):
+   Permanent Marker, dark, the size of "Project Highlights", centred. */
+.xp-intro { display: flex; flex-direction: column; align-items: center; gap: clamp(12px, calc(1.2 * var(--vw)), 18px);
+  margin-top: calc(-1 * clamp(40px, calc(5 * var(--vw)), 72px) + clamp(10px, calc(1 * var(--vw)), 16px)); }
+.xp-intro p { margin: 0; max-width: 1100px; text-align: center; text-wrap: balance; font-family: var(--font-marker), 'Comic Sans MS', cursive;
+  font-weight: 400; font-size: calc(var(--section-head-size) * .8); line-height: 1.2; color: #111; }
+@media (max-width: 700px) { .xp-intro p { font-size: 18px; } }
+.resume-link { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid #111; border-radius: 6px; color: #111; background: #b7f774;
+  text-decoration: none; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; font-size: 15px; letter-spacing: .04em;
+  text-transform: uppercase; transition: background .2s ease, color .2s ease; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .resume-link:hover { background: #111; color: #b7f774; } }
+.resume-link:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+#experience-box { text-align: left; }
+/* Its six experience cards are stacked one above the other, each running the full width of the box (as wide as the page
+   allows). */
+/* (stronger than the shared box rule, which would shrink it to its content) */
+.experience-section #experience-box { width: min(100%, 1040px); }
+.xp-list { display: flex; flex-direction: column; gap: clamp(14px, calc(1.6 * var(--vw)), 22px); }
+/* each card: like the other boxes' cards, a white card with a black heading strip in white monospace capitals */
+.xp-card { display: flex; flex-direction: column; background: #fff; border: 1px solid rgba(0,0,0,.1);
+  border-radius: clamp(12px, calc(1.2 * var(--vw)), 18px); box-shadow: 0 6px 18px -8px rgba(0,0,0,.25); overflow: hidden; }
+.xp-card-head { margin: 0; padding: clamp(12px, calc(1.2 * var(--vw)), 16px) clamp(16px, calc(1.6 * var(--vw)), 22px); background: #111; color: #fff;
+  font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; font-size: clamp(16px, calc(1.4 * var(--vw)), 20px);
+  text-transform: uppercase; text-align: center; line-height: 1.15; }
+.xp-card .xp-card-body { margin: 0; padding: clamp(14px, calc(1.4 * var(--vw)), 20px) clamp(16px, calc(1.6 * var(--vw)), 22px);
+  font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-size: calc(clamp(16px, calc(1.2 * var(--vw)), 19px) * .8); line-height: 1.5; color: #333; }
+/* An experience card's entries: each organization's name with its roles beneath it, each role's dates on the right;
+   organizations divided by hard black lines. */
+/* (paragraphs inside a card take the card's text size, not the page's general paragraph size) */
+.xp-card .xp-card-body p { font-size: inherit; line-height: inherit; }
+.xp-org + .xp-org { margin-top: clamp(14px, calc(1.4 * var(--vw)), 20px); padding-top: clamp(14px, calc(1.4 * var(--vw)), 20px); border-top: 2px solid #111; /* a hard black line between organizations */ }
+/* Each organization's name in the card headings' lettering too (extra-bold Inconsolata, all capitals). */
+.xp-org-name { margin: 0 0 4px; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800;
+  /* the size of the I'm-interested-in strip titles ("The gap between what tech can do…"): 22px drawn at the cards' 85%,
+     or on phones the size those strips use there */
+  font-size: calc(22px * .85);
+  letter-spacing: .04em; text-transform: uppercase; color: #111; }
+@media (max-width: 700px) { .xp-org-name { font-size: clamp(13px, calc((7.8vw - 12.75px) * .9), 20px); } }
+/* In a coloured card, each organization's name sits in a box of that colour with a dark outline (shaped like the green
+   boxes under "Clinical Education Hub"; the colours are the skill stack's): Product & Marketing pink, Research green,
+   Clinical Experience turquoise-blue, Leadership & Community orange. */
+.xp-card:is(.tone-pink, .tone-green, .tone-blue, .tone-orange) .xp-org-name { display: inline-block; padding: .25em .55em;
+  border: 1px solid #111; border-radius: 6px; }
+.xp-card.tone-pink .xp-org-name { background: #ffc4dd; }
+.xp-card.tone-green .xp-org-name { background: #b7f774; }
+.xp-card.tone-blue .xp-org-name { background: #a6ece4; }
+.xp-card.tone-orange .xp-org-name { background: #ffc98f; }
+.xp-role { margin-top: 8px; }
+/* Each role's title in bold Lora (the cards' serif), with its dates (or type
+   and dates) in the card headings' monospace capitals, in grey, pushed to the right edge (dropping under the title, still
+   on the right, when there isn't room). */
+.xp-card p.xp-role-title { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 1em; margin: 0 0 4px;
+  font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-weight: 700;
+  /* the size of the Project Highlights cards' titles ("The Approach"): their size drawn at those cards' 85%, or 14.5px on
+     phones */
+  font-size: calc(clamp(16px, calc(1.25 * var(--vw)), 20px) * .85);
+  color: #111; }
+@media (max-width: 700px) { .xp-card p.xp-role-title { font-size: 14.5px; } }
+.xp-meta { margin-left: auto; white-space: nowrap; font-family: var(--font-inconsolata), 'Courier New', monospace; font-size: .75em;
+  font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #777; }
+.experience-section #experience-title { color: #f2491b; /* the orange-red of "Project Highlights" */ font-size: calc(var(--section-head-size) * .8); }
+.section-title.featured-title { font-family: var(--font-marker), 'Comic Sans MS', cursive; font-size: var(--section-head-size);
+  font-weight: 400; letter-spacing: .01em; line-height: 1.2; text-transform: uppercase; }
+/* "Project Snapshots" itself: bold Inconsolata (monospaced), all capitals, the same size as the hero's "from raw ideas"
+   line (--section-head-size, like the other section headings). */
+/* "Project Highlights" itself: marker lettering, all capitals, the size of the hero's "from raw ideas -> real impact"
+   line (drawn at 80% on desktop, inside the hero's scaled-down copy). */
+/* the project's name on its own line under the title: black, in the lettering of the name "NETHRA PRABHU" (Arial
+   extra-bold, very tight spacing), in its own capitalisation */
+:is(#featured-title, #experience-title) .featured-project { display: block; margin-top: -.1em; font-family: Arial, Helvetica, sans-serif; font-weight: 850;
+  font-size: max(clamp(19px, calc(3.375 * var(--vw)), 60px), 17px); letter-spacing: -.075em; padding-right: .075em; line-height: .99;
+  text-transform: none; color: #111; }
+/* Under "Clinical Education Hub": the live prototype link and the timeline, side by side in two dark-outlined boxes filled
+   with the green of the hero's "from raw ideas" line (in the résumé button's lettering); the link turns black on hover. */
+.project-meta { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+  margin-top: calc(-1 * clamp(10px, calc(1.1 * var(--vw)), 16px)); /* tucked up close under the project's name */ }
+.project-meta-box { display: inline-flex; align-items: center; padding: 8px 16px; border: 1px solid #111; border-radius: 6px; color: #111;
+  background: #b7f774;
+  text-decoration: none; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; font-size: 15px; letter-spacing: .04em;
+  text-transform: uppercase; transition: background .2s ease, color .2s ease; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { a.project-meta-box:hover { background: #111; color: #b7f774; } }
+a.project-meta-box:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+.section-title.featured-title#featured-title { font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400; letter-spacing: .01em;
+  font-size: calc(var(--section-head-size) * .8); line-height: 1.2; white-space: nowrap; }
+/* "What I'm Exploring" in Project Snapshots: styled exactly like the "Project Snapshots" heading (bold Inconsolata, all capitals,
+   the size of the hero's "from raw ideas" line). */
+.on-my-mind { margin: 0 0 16px; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; letter-spacing: .02em;
+  font-size: var(--section-head-size); line-height: 1.2; text-transform: uppercase; color: #111; }
+/* "I'd Place My Bets On" (above the panels) uses the same layout, with a little space above it. */
+.bets-title { margin-top: clamp(8px, calc(1 * var(--vw)), 16px); }
+/* "I'd place my bets on" is styled exactly like the "The gap between..." line: Permanent Marker, normal case (the
+   font draws lowercase as small capitals), same size, spacing and line height. */
+.on-my-mind.bets-title { font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400; letter-spacing: normal; text-transform: none;
+  line-height: 1.25; font-size: calc(var(--section-head-size) / 2); }
+/* The project panels sit just under the heading (the section's usual gap between blocks is much larger). */
+/* Project Snapshots: its title, then the project stack (see the desktop block). */
+.snapshots-row { display: grid; grid-template-columns: min(640px, 60%) minmax(0, 1fr); column-gap: clamp(32px, calc(4 * var(--vw)), 64px); align-items: start; }
+/* the gap under the title matches the one under "What I'm Exploring" */
+.snapshots-col { display: flex; flex-direction: column; gap: clamp(16px, calc(1.6 * var(--vw)), 24px); min-width: 0; }
+.snapshots-col .project-snapshots { margin: 0; display: flex; flex-wrap: wrap; gap: clamp(28px, calc(3 * var(--vw)), 48px); }
+/* The page clips anything that runs past its edges (the orange off the bottom-right corner), rather than each
+   section clipping its own content, so the taped label below can reach up into the section above. */
+main { overflow: clip; }
+/* Juice pouring from the top of the contact section into the lower juice glass (left of the garnished one), for exactly
+   3 seconds, each time the section is scrolled to (the page adds .is-pouring). The stream runs straight down to
+   the juice's surface in that glass (in the juice picture, 1010 from its right edge and 690 up from its bottom, in its
+   1300-wide units). */
+.juice-pour { --u: calc(var(--orange-w) * 1.3 / 1300); position: absolute; z-index: 1; top: 0; width: clamp(6px, calc(.6 * var(--vw)), 9px);
+  right: calc(var(--orange-right, var(--orange-off)) + var(--u) * 1010); bottom: calc(var(--orange-off) + var(--u) * 690); translate: 50% 0;
+  border-radius: 0 0 6px 6px; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, #e2780f, #ffc65a 40%, #fff1c4 52%, #feb334 64%, #e2780f); }
+/* A ripple where the stream meets the juice. */
+.juice-pour::after { content: ''; position: absolute; left: 50%; top: 100%; width: 400%; height: 6px; translate: -50% -50%; border-radius: 50%;
+  border: 2px solid #fff1c4; opacity: 0; }
+.contact-section.is-pouring .juice-pour { animation: juice-pour 3s linear forwards; }
+.contact-section.is-pouring .juice-pour::after { animation: juice-ripple .5s ease-out .35s 5 forwards; }
+/* The stream runs down from the top (0.3s), pours, then its tail falls away into the glass (last 0.35s). */
+@keyframes juice-pour { 0% { opacity: 1; clip-path: inset(0 0 100% 0); } 10% { clip-path: inset(0 0 0 0); } 88% { opacity: 1; clip-path: inset(0 0 0 0); }
+  100% { opacity: 1; clip-path: inset(100% 0 0 0); } }
+@keyframes juice-ripple { 0% { opacity: .9; scale: .4; } 100% { opacity: 0; scale: 1.2; } }
+/* Contact: a black section below, tall enough for the "Let's Connect" card and the juice-and-orange group. */
+.contact-section { position: relative; background: #000; color: #f4eedf; min-height: calc(var(--orange-w) * 1.18 + 60px); }
+/* Peeled orange in the section's bottom-right corner (beside the contact details), behind the text, running
+   slightly off the right and bottom edges. */
+.contact-section { --orange-w: clamp(187px, calc(20.4 * var(--vw)), 323px); --orange-off: clamp(-50px, calc(-2.6 * var(--vw)), -20px); }
+.contact-orange { position: absolute; right: var(--orange-right, var(--orange-off)); bottom: var(--orange-off); width: var(--orange-w); height: auto;
+  pointer-events: none; z-index: 0; }
+/* Juice glasses behind the orange: the picture is 1.3x the orange's width and shares its bottom-right corner, so the
+   glasses always sit in the same place relative to it. */
+.contact-juice { position: absolute; right: var(--orange-right, var(--orange-off)); bottom: var(--orange-off); width: calc(var(--orange-w) * 1.3); height: auto;
+  pointer-events: none; z-index: 0; }
+/* A copy of the lower juice glass on the left side, at the same distance from the left edge as the original is from the
+   right edge, and at the same height. In the juice picture (1300x1180, 1.3x the orange's width wide) that glass is
+   579x715, with 721 to its right and 114 below it. */
+.contact-juice-left { --u: calc(var(--orange-w) * 1.3 / 1300); position: absolute; left: calc(var(--orange-right, var(--orange-off)) + var(--u) * 721);
+  bottom: calc(var(--orange-off) + var(--u) * 114); width: calc(var(--u) * 579); height: auto; pointer-events: none; z-index: 0; }
+/* An orange-tree branch in the bottom-left corner (the picture flipped upside down so it grows up from the bottom). */
+.contact-section { --branch-w: clamp(234px, calc(26.6 * var(--vw)), 468px); }
+.contact-branch { position: absolute; left: 0; top: 0; width: var(--branch-w); height: auto; pointer-events: none; z-index: 0; }
+.contact-branch-bottom { top: auto; bottom: 0; transform: scaleY(-1); }
+.contact-branch-bottom-phone { display: none; }
+.contact-section > :not(.contact-orange, .contact-juice, .contact-juice-left, .contact-branch, .juice-pour) { position: relative; z-index: 1; }
+
+.section-title { margin: 0; font-size: clamp(34px, calc(4.4 * var(--vw)), 64px); font-weight: 850; letter-spacing: -.04em; line-height: 1; }
+/* Small uppercase label over each block (About, Projects, How I Think, ...). */
+.section-kicker { margin: 0 0 16px; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
+.section-block p { margin: 0; font-size: clamp(16px, calc(1.15 * var(--vw)), 18px); line-height: 1.6; }
+/* Stand-in text until the real content is written. */
+.placeholder { font-style: italic; opacity: .55; }
+/* Project cards: white with black Inconsolata text, the title at the top and the description at the bottom, a thin
+   border and soft shadow like the exploring panels. */
+.project-card { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; aspect-ratio: 16 / 10; box-sizing: border-box;
+  padding: clamp(20px, calc(2.2 * var(--vw)), 32px); background: #fff; color: #111; font-family: var(--font-inconsolata), 'Courier New', monospace;
+  border-radius: clamp(12px, calc(1.2 * var(--vw)), 18px); border: 1px solid rgba(0,0,0,.1); box-shadow: 0 6px 18px -8px rgba(0,0,0,.25);
+  transition: translate .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .25s ease; }
+.project-card h4 { margin: 0; font-size: clamp(20px, calc(1.9 * var(--vw)), 28px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+.project-card h4 { font-family: var(--font-inconsolata), 'Courier New', monospace; letter-spacing: 0; }
+.project-card .placeholder { font-family: inherit; }
+/* Project snapshots as a stack: one wide white card at a time (title at the top, description at the bottom), the next
+   project's card peeking out behind, a dark number pill underneath to flip between them. */
+.project-deck { width: min(100%, 640px); margin: 0 auto; }
+.project-deck .theme-stack { aspect-ratio: 16 / 10; }
+.project-deck .theme-stack::before { background: rgba(0,0,0,.07); }
+.project-deck .theme-stack::after { background: rgba(0,0,0,.12); }
+.project-deck .explore-theme { display: flex; flex-direction: column; justify-content: space-between; padding: clamp(20px, calc(2.2 * var(--vw)), 32px); }
+.project-deck .explore-theme h4 { font-family: var(--font-inconsolata), 'Courier New', monospace; font-size: clamp(20px, calc(1.9 * var(--vw)), 28px);
+  font-weight: 800; line-height: 1.15; margin: 0; }
+.project-deck .explore-theme p { font-family: var(--font-inconsolata), 'Courier New', monospace; font-size: clamp(14px, calc(1.15 * var(--vw)), 16px);
+  font-style: italic; color: #111; opacity: .55; }
+.project-deck .theme-pill { border-color: rgba(0,0,0,.25); background: rgba(0,0,0,.04); }
+.project-deck .theme-pill-indicator { background: #111; }
+.project-deck .theme-pill-num { color: #111; }
+.project-deck .theme-pill-num.is-current { color: #f4eedf; }
+@media (hover: hover) { .project-deck .theme-pill:hover { border-color: #111; } }
+/* Project Snapshots: its title and glass card centred on the purple, the card as wide as it can be (up to 640px). */
+.snapshots-col { box-sizing: border-box; justify-self: center; align-self: center; width: min(100%, 640px); }
+/* 3 inches of white space under the title, before the black band */
+.snapshots-row { margin-bottom: 3in; }
+/* The project card is plain white, with a thin grey rim and a soft shadow so it stands out on the white section; it's a
+   single card, with no stacked cards behind it. */
+.snapshots-row .project-deck .explore-theme { background: #fff; border: 1px solid rgba(0,0,0,.14); box-shadow: 0 10px 28px -10px rgba(0,0,0,.3); }
+/* the description line stays at the card's bottom */
+.snapshots-row .project-deck .explore-theme p { margin-top: auto; }
+.snapshots-row .project-deck .theme-stack::before, .snapshots-row .project-deck .theme-stack::after { display: none; }
+/* Hovering a card stack (the project cards, and each What I'm Exploring card; the yellow panel itself stays put) pops it
+   out toward the viewer: it grows with a springy overshoot, rises slightly, and casts a deeper shadow. Its number pill
+   stays drawn above it. */
+:is(.project-deck, :is(#exploring, #highlights-box, #experience-box) .explore-intro) .theme-stack { position: relative; z-index: 1; filter: none;
+  transition: scale .35s cubic-bezier(.34, 1.56, .64, 1), translate .35s cubic-bezier(.34, 1.56, .64, 1), filter .35s ease; }
+/* (the project stack grows from near its top, so it doesn't swell up into the title, which also stays drawn above it) */
+.project-deck .theme-stack { transform-origin: 50% 10%; }
+:is(.project-deck, :is(#exploring, #highlights-box, #experience-box) .explore-intro) .theme-controls { position: relative; z-index: 2; }
+@media (hover: hover) {
+  .project-deck .theme-stack:hover { scale: 1.05; translate: 0 -3px; filter: drop-shadow(0 26px 30px rgba(0,0,0,.55)); }
+  :is(#exploring, #highlights-box, #experience-box) .explore-intro .theme-stack:hover { scale: 1.05; translate: 0 -4px; filter: drop-shadow(0 18px 22px rgba(90,60,0,.4)); }
+}
+/* The "What I'm Exploring" area (its heading and the two card decks) sits on a band in the oranges' yellow,
+   with dark headings, dark number pills and soft dark card edges. */
+:is(#exploring, #highlights-box, #experience-box) { position: relative; clip-path: inset(0 -100vmax);
+  /* the yellow from the oranges' highlights (sampled from the hero trees), painted as a border image pushed out to the
+     screen's edges, so the band runs full width */
+  border-image: linear-gradient(#fde36d, #fde36d) fill 0 / 0 / 0 100vmax;
+  /* starts close under the project cards, with "What I'm Exploring" near its top */
+  /* ends just under the cards' number pills */
+  padding: 12px 0 clamp(14px, calc(1.4 * var(--vw)), 20px); margin-top: calc(-1 * clamp(40px, calc(5 * var(--vw)), 72px) + 28px); }
+:is(#exploring, #highlights-box, #experience-box) .on-my-mind, :is(#exploring, #highlights-box, #experience-box) .explore-lede { color: #111; }
+/* "What I'm Exploring" itself: the same typeface and weight as the name, at half its size. */
+:is(#exploring, #highlights-box, #experience-box) .on-my-mind:not(.bets-title) { font-family: Arial, Helvetica, sans-serif; font-weight: 850; letter-spacing: -.04em;
+  /* half the name's size (its --name-size values, halved) */
+  font-size: clamp(19px, calc(3.375 * var(--vw)), 60px); line-height: 1;
+  /* centred, right at the top of the black band */
+  text-align: center; margin-bottom: clamp(16px, calc(1.6 * var(--vw)), 24px);
+  /* the tight letter spacing pulls the letters left of centre; a little padding on the left evens it out */
+  padding-left: .33em; }
+/* The yellow only frames the title and cards (a margin of yellow either side of them); the space beyond it shows Project
+   Snapshots' purple. */
+:is(#exploring, #highlights-box, #experience-box) { border-image-source: none; border-image-outset: 0; clip-path: none; background: #fff; box-sizing: border-box;
+  width: fit-content; max-width: 100%; align-self: center; padding-inline: clamp(16px, calc(3 * var(--vw)), 48px);
+  /* a rounded panel lifted off the purple: a black border all the way round with a thin white outline around that, and a soft shadow beneath */
+  border-radius: clamp(14px, calc(1.6 * var(--vw)), 24px);
+  box-shadow: 0 0 0 2px #111, 0 0 0 5px #fff, 0 30px 50px -12px rgba(0,0,0,.6), 0 6px 14px rgba(0,0,0,.3); }
+/* (no title in the box now, so a little more yellow above the cards) */
+:is(#exploring, #highlights-box, #experience-box) { padding-top: clamp(18px, calc(2 * var(--vw)), 28px); }
+/* The band at the top of the section: a full-width black strip (straight on from the black about section) holding an
+   "I'm interested in..." line in the hero's "from raw ideas" lettering (same marker and size, in white), and the
+   yellow box just under it. */
+/* (it starts right at the section's top edge, cancelling the section's top padding) */
+.explore-band { --band-pad: clamp(28px, calc(3.5 * var(--vw)), 52px); position: relative; display: flex; flex-direction: column;
+  margin-top: calc(-1 * (var(--ps-pad) + clamp(6px, calc(.6 * var(--vw)), 10px)));
+  align-items: center; gap: clamp(10px, calc(1 * var(--vw)), 14px);
+  /* the white gap between the band and the "Project Highlights" title, instead of the section's usual gap */
+  margin-bottom: calc(-1 * clamp(40px, calc(5 * var(--vw)), 72px) + clamp(20px, calc(2 * var(--vw)), 28px)); }
+.explore-band #exploring { margin-top: 0; }
+.explore-kicker { margin: 0; font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400; letter-spacing: .01em;
+  line-height: 1.2; text-transform: uppercase; color: #def774; text-align: center; font-size: calc(var(--section-head-size) * .8); }
+/* (the section is its own layer, so the strip is drawn over the section's white but under the band's contents) */
+.featured-section:has(.explore-band) { isolation: isolate; }
+/* The black strip runs down to halfway down the yellow box, so the box's lower half sits on the white: it's drawn from the
+   box (from far above it, hidden under the about section, to the box's middle). */
+#exploring::before { content: ''; position: absolute; z-index: -1; top: -100vmax; bottom: 50%; left: 50%; width: calc(100 * var(--vw));
+  translate: -50% 0; background: #000; pointer-events: none; }
+/* A copy of that box (the same look and the same two card decks) sits just under "Clinical Education Hub", in place of
+   the 3 inches of white that were under the title; the section ends a little below it. */
+#highlights-box { margin-top: calc(-1 * clamp(40px, calc(5 * var(--vw)), 72px) + clamp(16px, calc(1.6 * var(--vw)), 24px));
+  margin-bottom: clamp(20px, calc(2.2 * var(--vw)), 32px); }
+/* (the section ends right under the box, so Experiences and Outcomes follows close behind) */
+.featured-section:has(#highlights-box) { padding-bottom: 0; }
+.featured-section:has(#highlights-box) .snapshots-row { margin-bottom: 0; }
+/* A one-line summary of the project at the top of the box, above its cards, in Permanent Marker (dark, on the box's white),
+   in the cards' grid so it spans exactly their row. */
+#highlights-box .hl-summary { grid-row: 1; grid-column: 1 / -1; margin: calc(-1 * clamp(8px, calc(1 * var(--vw)), 14px)) 0 clamp(8px, calc(1 * var(--vw)), 14px);
+  text-align: center; text-wrap: balance; font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400;
+  /* the size of "Project Highlights" (undoing the cards' 85% zoom beside screens wider than phones) */
+  font-size: calc(var(--section-head-size) * .8 / .85); line-height: 1.2; color: #111; }
+@media (max-width: 700px) { #highlights-box .hl-summary { font-size: 18px; margin-top: -4px; } }
+/* Its key phrases (and those in the Experiences summary) are marked in lemon yellow, like a highlighter pen (carried onto
+   each line when a phrase wraps). */
+#highlights-box .hl-summary mark, .xp-intro p mark { color: inherit; background: linear-gradient(transparent 22%, #fff44f 22%, #fff44f 88%, transparent 88%);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Its cards, under the summary: the Problem, Designing & Building, and Impact & Future decks side by side (each card's own
+   row for its number pill underneath), then the Snapshot card (with the skill stack inside it) across all three columns.
+   Phones stack them all, in that order. */
+#highlights-box .explore-columns { grid-template-columns: repeat(3, minmax(0, 380px)); grid-template-rows: repeat(5, auto); }
+#highlights-box .explore-intro { grid-row: 2 / span 2; }
+#highlights-box .hl-snapshot { grid-row: 4 / span 2; grid-column: 1 / -1; }
+#highlights-box .hl-snapshot .theme-stack { width: 100%; }
+/* Project Highlights follows below the band, with a little white above its title; the section ends with the 3 inches of
+   white under the title. */
+.snapshots-row { padding-top: clamp(12px, calc(1.4 * var(--vw)), 20px); }
+.featured-section:has(.snapshots-row:last-child) { padding-bottom: 0; }
+/* "What I'm Exploring" intro (between the heading and the panels): an opening line and three themes side by side
+   (stacked on phones), in Inconsolata. */
+.explore-intro { display: flex; flex-direction: column; gap: clamp(16px, calc(1.6 * var(--vw)), 24px); margin: 4px 0 clamp(24px, calc(2.4 * var(--vw)), 36px);
+  font-family: var(--font-inconsolata), 'Courier New', monospace; color: #222; }
+.explore-intro p { margin: 0; }
+/* The opening line: Permanent Marker, half the section headings' size (--section-head-size). */
+.explore-intro .explore-lede { font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400;
+  font-size: calc(var(--section-head-size) / 2); line-height: 1.25; color: #111; }
+/* Two columns under "What I'm Exploring": "The gap between..." with its deck (left), "I'd place my bets on" with its deck
+   (right); each title sits right above its cards. Stacked on phones. */
+/* The two columns share their rows (card, number pill), so both cards are the same size and both pills line up. */
+/* Desktop: the two cards sit close together around the centre. */
+.explore-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 380px)); justify-content: center; grid-template-rows: auto auto;
+  column-gap: clamp(20px, calc(2.4 * var(--vw)), 40px); row-gap: 14px; }
+.explore-intro { display: grid; grid-row: 1 / span 2; grid-template-columns: minmax(0, 1fr); grid-template-rows: subgrid; margin: 0; }
+.explore-intro > .theme-deck { display: grid; grid-row: 1 / span 2; grid-column: 1; grid-template-rows: subgrid; row-gap: 14px; }
+/* Each deck is one square white card, centred in its column: its Permanent Marker title stays at the top, and the
+   points flip in the space beneath it (the card grows taller only if a point's text wouldn't otherwise fit). */
+.explore-intro .theme-stack { width: min(100%, 380px); aspect-ratio: 1; justify-self: center; box-sizing: border-box; isolation: isolate;
+  --card-pad: clamp(18px, calc(1.8 * var(--vw)), 26px); --card-radius: clamp(12px, calc(1.2 * var(--vw)), 18px);
+  grid-template-rows: auto 1fr; padding: var(--card-pad); background: #fff; border: 1px solid rgba(0,0,0,.1);
+  border-radius: var(--card-radius); box-shadow: 0 6px 18px -8px rgba(0,0,0,.25); }
+.explore-intro .theme-stack::before, .explore-intro .theme-stack::after { z-index: -1; inset: -1px; }
+/* On the light band: the stacked edges behind each card and the number pills are dark (like the project stack). */
+:is(#exploring, #highlights-box, #experience-box) .theme-stack::before, :is(#exploring, #highlights-box, #experience-box) .theme-stack::after { display: none; }
+:is(#exploring, #highlights-box, #experience-box) .explore-intro .theme-stack { box-shadow: 0 6px 18px -8px rgba(0,0,0,.25); }
+:is(#exploring, #highlights-box, #experience-box) .theme-pill { border-color: rgba(0,0,0,.25); background: rgba(0,0,0,.04); }
+:is(#exploring, #highlights-box, #experience-box) .theme-pill-indicator { background: #111; }
+:is(#exploring, #highlights-box, #experience-box) .theme-pill-num { color: #111; }
+:is(#exploring, #highlights-box, #experience-box) .theme-pill-num.is-current { color: #f4eedf; }
+@media (hover: hover) { :is(#exploring, #highlights-box, #experience-box) .theme-pill:hover { border-color: #111; } }
+.deck-heading { grid-row: 1; grid-column: 1; position: relative; z-index: 2; margin-bottom: 12px; }
+/* A hand-drawn underline under each title: an uneven, round-ended marker stroke in the title's ink. */
+.deck-heading::after { content: ''; display: block; height: max(5px, .2em); margin-top: .18em; font-size: var(--deck-head-size, 22px);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 14' preserveAspectRatio='none'%3E%3Cpath d='M4 8.5 C 60 6.2, 120 9.8, 190 7.4 S 320 5.8, 396 8.2' fill='none' stroke='%23111' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M30 9.6 C 110 8.4, 210 10.2, 300 8.6' fill='none' stroke='%23111' stroke-width='2' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
+/* In the What I'm Exploring cards the title sits on a black strip across the top of the card, in white, with no underline. */
+.explore-intro .deck-heading { margin: calc(-1 * var(--card-pad)) calc(-1 * var(--card-pad)) 14px;
+  padding: clamp(12px, calc(1.2 * var(--vw)), 16px) var(--card-pad); background: #111;
+  border-radius: calc(var(--card-radius) - 1px) calc(var(--card-radius) - 1px) 0 0; }
+.explore-intro .deck-heading::after { display: none; }
+/* Side by side, the two I'm-interested-in strips are the same height: each has room for two lines of title, with a
+   one-line title centred in it. */
+@media (min-width: 701px) {
+  #exploring .explore-intro .deck-heading > * { display: flex; align-items: center; justify-content: center; min-height: 2lh; }
+}
+/* each card's bold title is centred too */
+:is(#exploring, #highlights-box, #experience-box) .explore-intro .explore-theme h4 { text-align: center; }
+:is(#exploring, #highlights-box, #experience-box) .deck-heading .explore-lede, :is(#exploring, #highlights-box, #experience-box) .deck-heading .bets-title { margin: 0; color: #fff; text-align: center;
+  /* as big as fits: the longest card still sits inside its square beneath it (both decks share one size) */
+  font-size: var(--deck-head-size, 22px); line-height: 1.15;
+  /* in Clinical Education Hub's lettering (extra-bold Inconsolata), all capitals */
+  font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; letter-spacing: normal; text-transform: uppercase; }
+.explore-intro .theme-stack .explore-theme { grid-area: 2 / 1; padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; }
+.theme-deck { grid-column: 2; }
+.theme-deck { display: flex; flex-direction: column; gap: 14px; outline: none; touch-action: pan-y; }
+/* All cards share one spot (so the deck is as tall as the longest); only the current one shows. Two faint edges behind it
+   suggest the rest of the deck. */
+.theme-stack { position: relative; display: grid; }
+.theme-stack::before, .theme-stack::after { content: ''; position: absolute; inset: 0; border-radius: clamp(12px, calc(1.2 * var(--vw)), 18px);
+  background: rgba(255,255,255,.18); pointer-events: none; }
+.theme-stack::before { translate: 16px 16px; }
+.theme-stack::after { translate: 8px 8px; background: rgba(255,255,255,.32); }
+.theme-stack .explore-theme { grid-area: 1 / 1; position: relative; z-index: 1; opacity: 0; visibility: hidden; translate: calc(var(--from, 1) * 40px) 0;
+  transition: opacity .35s ease, translate .35s cubic-bezier(.22,1,.36,1), visibility 0s .35s; }
+.theme-stack[data-dir="-1"] .explore-theme { --from: -1; }
+.theme-stack .explore-theme.is-current { opacity: 1; visibility: visible; translate: 0 0; transition: opacity .35s ease, translate .35s cubic-bezier(.22,1,.36,1); }
+/* The number pill sits centred under the card. */
+.theme-controls { display: flex; align-items: center; justify-content: center; }
+/* The number pill: like the menu, press and slide along it (a highlight follows) to flip to that card, or tap a number. */
+.theme-pill { position: relative; display: grid; grid-template-columns: repeat(var(--count), 34px); padding: 4px; border-radius: 999px;
+  border: 1px solid rgba(244,238,223,.35); background: rgba(255,255,255,.06); cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+.theme-pill-indicator { position: absolute; top: 4px; bottom: 4px; left: 4px; width: 34px; border-radius: 999px; background: #f4eedf;
+  translate: calc(var(--index) * 34px) 0; transition: translate .25s cubic-bezier(.22,1,.36,1); }
+.theme-pill-num { position: relative; z-index: 1; height: 30px; border: 0; border-radius: 999px; background: none; cursor: pointer; padding: 0;
+  font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 700; font-size: 15px; color: #f4eedf; transition: color .2s ease;
+  -webkit-tap-highlight-color: transparent; }
+.theme-pill-num.is-current { color: #111; }
+.theme-pill-num:focus-visible { outline: 2px solid #feb334; outline-offset: 1px; }
+@media (hover: hover) { .theme-pill:hover { border-color: #f4eedf; } }
+.sr-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Each point is its own white card (like the panels below) with its title and text. */
+.explore-theme { box-sizing: border-box; padding: clamp(16px, calc(1.6 * var(--vw)), 22px) clamp(18px, calc(1.8 * var(--vw)), 26px);
+  background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: clamp(12px, calc(1.2 * var(--vw)), 18px);
+  box-shadow: 0 6px 18px -8px rgba(0,0,0,.25); }
+/* Card titles: Lora (the hero description's serif), bold. */
+.explore-theme h4 { margin: 0 0 8px; font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-size: clamp(16px, calc(1.25 * var(--vw)), 20px);
+  font-weight: 700; line-height: 1.25; color: #111; }
+/* Card text: Lora, at the size the hero description is drawn (its size, scaled with the 80% hero on desktop; 13px on phones). */
+.explore-theme p { font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-size: calc(clamp(16px, calc(1.2 * var(--vw)), 19px) * .8); line-height: 1.5; color: #333; }
+/* A card with richer content (the Problem, Designing & Building, Impact & Future and Skill Stack cards). Same serif and
+   size as the other cards' text. */
+.theme-body { font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-size: calc(clamp(16px, calc(1.2 * var(--vw)), 19px) * .8);
+  line-height: 1.5; color: #333; }
+/* The Skill Stack card: a bordered two-by-two table, Product and Design down the left column, Technical and Clinical down
+   the right (one column on phones), dark rules between the cells. Each cell is centred: the area's name in the card headings'
+   lettering above its skills in Inconsolata. */
+.skill-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto auto; grid-auto-flow: column;
+  margin: 0; border: 1px solid #111; border-radius: 14px; overflow: hidden; /* rounded corners, the cells clipped to them */ }
+.skill-grid > div { padding: .7em .9em; }
+.skill-grid > div:nth-child(-n + 2) { border-right: 1px solid #111; }
+.skill-grid > div:nth-child(odd) { border-bottom: 1px solid #111; }
+.skill-grid > div { text-align: center; }
+/* each area's name in the card headings' lettering ("SKILL STACK": extra-bold Inconsolata, all capitals) */
+.skill-grid dt { margin: 0 0 .3em; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; letter-spacing: .04em;
+  text-transform: uppercase; color: #111; }
+/* each area filled with its own soft colour (dark text stays easy to read): Product orange, Design pink, Technical the
+   site's green, Clinical turquoise */
+.skill-grid > .is-orange { background: #ffc98f; }
+.skill-grid > .is-pink { background: #ffc4dd; }
+.skill-grid > .is-green { background: #b7f774; }
+.skill-grid > .is-blue { background: #a6ece4; }
+.skill-grid dd { margin: 0; font-family: var(--font-inconsolata), 'Courier New', monospace; font-size: .95em; line-height: 1.45; }
+@media (max-width: 700px) {
+  .skill-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
+  .skill-grid > div:nth-child(-n + 2) { border-right: 0; }
+  .skill-grid > div:not(:last-child) { border-bottom: 1px solid #111; }
+}
+/* The Problem deck's cards: paragraphs spaced apart, the research findings as a tiny table (each finding's name in bold
+   on the left, what it meant on the right, thin rules between rows, a black border around it), and the reframed question set off in bold. */
+.theme-body > p { margin: 0 0 .7em; }
+.theme-body > p:last-child { margin-bottom: 0; }
+/* (a paragraph that starts a little further down from the one before: "Initially…" in The Assignment, "Every asset…" in
+   Educational Assets) */
+.theme-body > p.problem-turn { margin-top: 1.3em; }
+.theme-body > p.problem-turn.is-wide { margin-top: 2.2em; } /* (Educational Assets and Building It: a wider gap still) */
+.problem-points { margin: 0 0 .7em; padding-left: 1.1em; display: grid; gap: .35em; }
+.problem-points:last-child { margin-bottom: 0; }
+.problem-points strong { color: #111; }
+/* (a touch smaller than the card's text, with snug cells, so "resources got lost across email and tools" fits on one line) */
+.problem-table { width: 100%; border-collapse: collapse; font-size: .87em; line-height: 1.35; border: 1px solid #111; }
+.problem-table tr + tr { border-top: 1px solid rgba(0,0,0,.18); }
+.problem-table th, .problem-table td { padding: .4em .4em; text-align: left; vertical-align: top; }
+.problem-table th { padding-left: .55em; }
+.problem-table td { padding-right: .45em; }
+.problem-table th { width: 1%; white-space: nowrap; font-weight: 700; color: #111; }
+/* (a small grey note under a row's name, e.g. the research pattern a design principle answers) */
+.problem-table .table-note { display: block; font-size: .82em; font-weight: 400; color: #777; white-space: normal; }
+@media (max-width: 700px) { .problem-table { font-size: .84em; } }
+/* The reframed question: in the card headings' monospace (Inconsolata, regular weight, all capitals), on a green box like
+   the ones under "Clinical Education Hub" (same green, dark outline and text), a little further down from the line that
+   leads into it. */
+.theme-body > p.problem-question { margin-top: 1.2em; padding: .8em .9em; background: #b7f774; border: 1px solid #111; border-radius: 6px;
+  color: #111; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 400; text-transform: uppercase; letter-spacing: .02em;
+  line-height: 1.35; text-align: center; }
+/* My Biggest Takeaways: a green table in the same style as that box (same green, dark outline, regular-weight monospace
+   capitals), one takeaway per row, rows divided by thin dark lines. */
+.takeaway-table { width: 100%; border-collapse: separate; border-spacing: 0; background: #b7f774; border: 1px solid #111; border-radius: 6px;
+  overflow: hidden; color: #111; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 400; text-transform: uppercase;
+  letter-spacing: .02em; line-height: 1.35; text-align: center; }
+.takeaway-table td { padding: .9em .9em; }
+.takeaway-table tr + tr td { border-top: 1px solid rgba(0,0,0,.35); }
+/* a small label above a card's text ("Planned, not shipped") in the card headings' monospace capitals */
+.theme-body .card-note { font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; font-size: .8em; letter-spacing: .04em;
+  text-transform: uppercase; color: #f2491b; }
+/* The key decisions as a small two-column table with a black border around it (like the Problem and Approach tables):
+   column headings in the card headings' monospace capitals, each decision in bold on the left with its tradeoff beside
+   it, rows divided by thin lines. */
+.decision-table { width: 100%; border-collapse: collapse; border: 1px solid #111; font-size: .87em; line-height: 1.35; }
+@media (max-width: 700px) { .decision-table { font-size: .84em; } }
+.decision-table thead th { font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; font-size: .8em; letter-spacing: .04em;
+  text-transform: uppercase; color: #111; text-align: left; padding: 7px 8px 6px; border-bottom: 1.5px solid #111; }
+.decision-table tbody th, .decision-table td { text-align: left; vertical-align: top; padding: 7px 8px; border-bottom: 1px solid rgba(0,0,0,.12); }
+.decision-table tbody th { font-weight: 700; color: #111; width: 40%; }
+/* ("Basic search before AI" a little smaller, just enough to fit on one line) */
+.decision-table tbody th.is-snug { font-size: .85em; }
+.decision-table tbody tr:last-child :is(th, td) { border-bottom: 0; }
+/* "Where I'd Place My Bets": two white panels side by side (stacked on phones), with a thin border and soft shadow
+   so they stand out from the off-white section. */
+.explore-grid { --cols: 2; --gap: clamp(12px, calc(1.4 * var(--vw)), 20px); container-type: inline-size;
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--gap); }
+.explore-card { display: flex; align-items: flex-end;
+  /* sized to its writing; a row stretches to its tallest panel, so panels side by side always match */ box-sizing: border-box; padding: clamp(16px, calc(1.6 * var(--vw)), 24px);
+  background: #fff; color: #111; border: 1px solid rgba(0,0,0,.1); box-shadow: 0 6px 18px -8px rgba(0,0,0,.25);
+  border-radius: clamp(12px, calc(1.2 * var(--vw)), 18px); transition: translate .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .25s ease; }
+/* Hover (desktop, project cards and exploring panels): the card lifts a little, its shadow deepens and its border warms to the oranges' yellow-orange. */
+@media (hover: hover) { .project-card:hover { translate: 0 -6px; border-color: #feb334; box-shadow: 0 18px 32px -12px rgba(0,0,0,.3); } }
+@media (hover: hover) { .explore-card:hover { translate: 0 -6px; border-color: #feb334; box-shadow: 0 18px 32px -12px rgba(0,0,0,.3); } }
+/* Panel titles: bold Inconsolata in capitals (like the section headings), at the top; the placeholder sits at the bottom. */
+.explore-card { flex-direction: column; justify-content: flex-start; align-items: flex-start; }
+/* Writing sits right under the title; a "Coming soon" placeholder sits at the bottom. */
+.explore-card > .placeholder { margin-top: auto; }
+/* A panel's writing: a bold subtitle over a short paragraph, in Inconsolata. Panels grow taller to fit their writing. */
+.explore-body { display: flex; flex-direction: column; gap: 8px; font-family: var(--font-inconsolata), 'Courier New', monospace; }
+.explore-body h5 { margin: 0; font-size: clamp(14px, calc(1.1 * var(--vw)), 17px); font-weight: 800; line-height: 1.2; color: #111; }
+.explore-body p { margin: 0; font-size: clamp(13px, calc(.95 * var(--vw)), 15px); line-height: 1.45; color: #333; }
+/* Contact sits just below the experience, set off by a thin rule. */
+/* "Let's Connect" and its links: centred across the section, level with the middle of the lower juice glass (that
+   glass's middle sits 0.472x the orange's width above the juice picture's bottom edge), but never so low that the
+   icons reach the section's bottom edge. */
+.contact-section > .contact-block { position: absolute; left: 50%; bottom: max(calc(var(--orange-off) + var(--orange-w) * .472), 118px); translate: -50% 50%;
+  width: max-content; max-width: calc(100% - 40px); text-align: center; z-index: 1; }
+.contact-block .contact-links { justify-content: center; }
+/* The logos sit just under the heading. */
+.contact-block .contact-links { margin-top: .5cm; }
+/* Desktop logos are larger; phones get smaller ones (see the phone section). */
+.email-link svg { width: 28px; height: 28px; }
+.contact-links { gap: 16px; }
+/* Only the logos sit on the paper card pinned to the section: an off-white card hugging them, tilted slightly, held by an
+   orange push-pin at the center of each side edge. "Let's Connect" sits on the black just above it, in the hero's "from raw ideas" marker,
+   size and orange-gold. */
+.contact-block .contact-links { display: inline-flex; position: relative;
+  padding: clamp(16px, calc(1.4 * var(--vw)), 22px) clamp(20px, calc(1.8 * var(--vw)), 28px) clamp(14px, calc(1.2 * var(--vw)), 20px);
+  background: linear-gradient(175deg, #fffdf6, #f3ecdc); rotate: 1.5deg; box-shadow: 0 1px 0 rgba(0,0,0,.15), 0 14px 30px -8px rgba(0,0,0,.7); }
+/* An orange push-pin holding the card up: a glossy orange head (highlight top-left, darker rim) with a soft shadow on the
+   paper beneath it. */
+.contact-block .contact-links::before, .contact-block .contact-links::after { content: ''; position: absolute; left: 0; top: 50%; width: 14px; height: 14px; translate: -50% -50%;
+  border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff1c9 0 9%, #ffb347 22%, #f07a12 60%, #b8460a 100%);
+  box-shadow: 2px 3px 4px rgba(0,0,0,.4), inset -1px -2px 3px rgba(0,0,0,.25); z-index: 2; }
+.contact-block .contact-links::after { left: 100%; }
+.lets-connect { margin: 0; font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400; color: #ffbb33;
+  font-size: calc(var(--section-head-size) * .8); letter-spacing: .01em; line-height: 1.2; text-transform: uppercase; }
+/* On the paper, the logos are dark; hovering inverts one to black with a white logo, and the handle label is dark too. */
+.contact-block .email-link { color: #111; border-color: rgba(0,0,0,.35); }
+.contact-block .email-link:hover, .contact-block .email-link:focus-visible { background: #111; border-color: #111; color: #fff; }
+.contact-block .email-link:focus-visible { outline-color: #111; }
+/* Contact links under "Let's Connect" (email, GitHub, LinkedIn): round icon-only buttons; hovering fills one with white. */
+.contact-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.email-link { display: inline-flex; align-items: center; justify-content: center; width: 62px; height: 62px; border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%; color: #fff; text-decoration: none;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, scale .2s ease; }
+.email-link:hover, .email-link:focus-visible { background: #fff; border-color: #fff; color: #111; scale: 1.04; }
+.email-link:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+/* Desktop: hovering (or tabbing to) a contact icon shows its handle in a small label above it. */
+@media (hover: hover) and (min-width: 701px) {
+  .email-link { position: relative; }
+  .email-link::after { content: attr(data-handle); position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 6px; padding: 6px 12px;
+    border-radius: 8px; background: #111; color: #fff; font-family: var(--font-lora), Georgia, serif; font-size: 14px; white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity .18s ease, translate .18s ease; }
+  .email-link::before { content: ''; position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 6px; border: 6px solid transparent;
+    border-bottom: 0; border-top-color: #111; opacity: 0; pointer-events: none; transition: opacity .18s ease, translate .18s ease; }
+  .email-link:hover::after, .email-link:focus-visible::after, .email-link:hover::before, .email-link:focus-visible::before { opacity: 1; translate: -50% 0; }
+}
+/* Desktop: the whole hero is drawn at 80% (name, photo, "from raw ideas" line and description scale together, and the
+   left tree shrinks to match; the right tree, sized from the hero's height, follows the shorter hero). Phones unchanged. */
+@media (min-width: 701px) {
+  .pond-hero .hero-copy { zoom: .8; }
+  .hero-branches { background-size: 38% auto; }
+  /* the right tree, 10% bigger, growing from the top-right corner */
+  .hero-branches-right { height: calc((100% + var(--peek)) * 1.1); }
+  /* The project stack sits right under "Project Snapshots", lined up with its left edge. */
+  .project-deck { margin: 0; }
+  /* Project Snapshots spans the full screen width, its title and project stack centred under the about description. */
+  .snapshots-row { width: calc(100 * var(--vw)); max-width: none; grid-template-columns: minmax(0, 1fr); column-gap: 0; align-items: stretch; }
+  .snapshots-col .project-snapshots { justify-content: center; width: 100%; }
+  .snapshots-col { align-items: center; }
+  .snapshots-col .section-title.featured-title#featured-title { margin-left: 0; text-align: center; }
+  /* The two "What I'm Exploring" cards (with their titles, text and number pills) are drawn at 85%. */
+  .explore-columns { zoom: .85; }
+  /* The experience cards' text matches the card text in the boxes above (which are drawn at 85%). */
+  .xp-card .xp-card-body { font-size: calc(clamp(16px, calc(1.2 * var(--vw)), 19px) * .8 * .85); }
+  /* The Ideas I'm Exploring cards are no longer square: each pair is only as tall as its longest card's text (both decks
+     share that height), with no empty space at the bottom. */
+  .explore-intro .theme-stack { aspect-ratio: auto; }
+}
+@media (max-width: 700px) {
+  /* Phones: the menu is pinned to the top of the screen (see below), with the logo centred just under it. */
+  .pond-nav { flex-direction: column; padding: 66px 16px 0; }
+  .brand { position: static; translate: none; width: 38px; }
+  /* Phone menu: all four items, centred and pinned to the top of the screen so it's always there; press the bar
+     and slide along it to jump between sections. */
+  /* five items: tight enough to fit a 320px-wide phone */
+  .nav-links { top: 12px; left: 50%; right: auto; translate: -50% 0; gap: 0; font-size: 10px; letter-spacing: .02em; max-width: calc(100vw - 12px); white-space: nowrap; }
+  /* Sections stop just below the pinned menu instead of under it. */
+  .page-section, .page-section [id] { scroll-margin-top: 64px; }
+  .pond-hero:has(.hero-branches) .nav-links { padding: 4px; }
+  .nav-links a { padding: 8px clamp(4px, 1.6vw, 8px); }
+  .nav-arrow { display: none; }
+  /* Name sits a little higher on phones, just under the logo. */
+  .pond-hero { --name-top: calc(70px + .5in); --name-size: clamp(30px, calc(7.7 * var(--vw)), 54px); }
+  /* Where it crosses the orange-tree leaves, a tighter, stronger shadow makes the name pop out. */
+  .theme-dark:has(.hero-branches) .hero-copy h1 { text-shadow: 0 2px 4px rgba(0,0,0,.95), 0 0 10px #000, 0 0 22px #000, 0 6px 30px rgba(0,0,0,.9); }
+  .hero-copy h1 { letter-spacing: -.075em; }
+  .lotus-leaf { max-width: 90px; }
+  .explore-grid { --cols: 1; }
+  /* Phones: the two columns stack, each title above its own deck. */
+  /* The first deck's card titles ("AI that Businesses Can Depend On", "What Powers AI, and What It Costs", ...) stay on one
+     line: at most 14.5px, shrinking on narrow phones to the card's inner width (the yellow box's inner width,
+     up to the card's 380px, less the card's padding and rim) divided by the longest title's width-to-size ratio (about
+     16.7, with a little to spare). */
+  :is(#exploring, #highlights-box, #experience-box) .explore-intro:not(.bets-intro) .explore-theme h4 { white-space: nowrap;
+    font-size: min(14.5px, calc((min(100 * var(--vw) - 2 * max(20px, calc(6 * var(--vw))) - 2 * max(16px, calc(3 * var(--vw))), 380px) - 38px) / 17.2)); }
+  /* the other deck's card titles at the same slightly smaller size */
+  :is(#exploring, #highlights-box, #experience-box) .bets-intro .explore-theme h4 { font-size: 14.5px; }
+  /* (a tighter gap, so the "I'd place my bets on" card sits a little higher under the first deck's pill) */
+  .explore-columns { display: flex; flex-direction: column; gap: 16px; }
+  /* phones: the square shrinks with the screen, so the titles do too (the smallest phones let the card grow a little) */
+  .explore-columns { --deck-head-size: clamp(13px, calc((7.8vw - 12.75px) * .9), 20px); }
+  /* The cards are no longer square on phones either: each deck is only as tall as its longest card's text. */
+  .explore-intro .theme-stack { aspect-ratio: auto; }
+  .explore-intro, .explore-intro > .theme-deck { display: flex; flex-direction: column; gap: 12px; }
+  .explore-intro, .explore-intro > .theme-deck { align-items: center; }
+  /* the project box's short placeholder cards run the full width, like the decks around them */
+  #highlights-box .hl-snapshot, #highlights-box .hl-snapshot > .theme-deck { align-self: stretch; }
+  #highlights-box .hl-snapshot .theme-stack { width: 100%; }
+  /* Phones: a smaller orange tucked into the corner. */
+  .contact-section { --orange-w: 108px; --orange-off: -14px; }
+  .contact-section { --branch-w: 156px; }
+  /* The bottom-left branch is a little smaller on phones so it stays clear of the centred "Let's Connect" icons. */
+  .contact-branch-bottom { width: min(calc(var(--branch-w) * 1.15), calc(50% - 72px)); }
+  /* Phones swap in the version with bigger oranges. */
+  .contact-branch-bottom:not(.contact-branch-bottom-phone) { display: none; }
+  .contact-branch-bottom-phone { display: block; }
+  /* Room for the contact card, the orange and the juice glasses. */
+  .contact-section { min-height: 210px; }
+  /* Phones: "Project Snapshots" sits higher (closer to the black hero) and centred. */
+  .section-title.featured-title#featured-title { text-align: center; }
+  .snapshots-row { display: flex; flex-direction: column; align-items: stretch; gap: 28px; }
+  .snapshots-col { align-items: center; }
+  .snapshots-col .project-snapshots { flex-direction: column; align-items: center; width: 100%; }
+  .section-title.featured-title#featured-title { font-size: 18px; }
+  .experience-section #experience-title { font-size: 18px; }
+  :is(#featured-title, #experience-title) .featured-project { font-size: max(clamp(15px, calc(3.85 * var(--vw)), 27px), 20px); }
+  .on-my-mind { text-align: center; }
+  /* as big as fits on one line in the yellow box: the box's inner width (the screen less the page's side padding and the
+     box's own) divided by the heading's width-to-size ratio (about 11.45, with a little to spare) */
+  :is(#exploring, #highlights-box, #experience-box) .on-my-mind:not(.bets-title) { padding-left: 0; white-space: nowrap;
+    font-size: calc((100 * var(--vw) - 2 * max(20px, calc(6 * var(--vw))) - 2 * max(16px, calc(3 * var(--vw)))) / 11.8); }
+  :is(#exploring, #highlights-box, #experience-box) { padding-top: 16px; }
+  .explore-kicker { font-size: 18px; }
+  .featured-section { --ps-pad: 4px; }
+  /* Phones: the description stops after "Neuroscience" with "...[read more]"; tapping it shows the rest. */
+  .hero-about:not(.is-open) .about-more { display: none; }
+  .hero-about:not(.is-open) .about-ellipsis { display: inline; }
+  .about-toggle { display: inline; margin: 0 0 0 .15em; padding: 0; border: 0; background: none; font: inherit; color: #b7f774; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px; -webkit-tap-highlight-color: transparent; }
+  .hero-about.is-open .about-toggle { margin-left: .35em; }
+  /* Phones: "Let's Connect" is kept level with the lower glass but high enough to stay whole, with smaller icons. */
+  .contact-section > .contact-block { bottom: max(calc(var(--orange-off) + var(--orange-w) * .472), 64px); }
+  /* "Let's Connect" stays centred; the juice group slides right (partly off the edge) just far enough to clear it:
+     its left edge sits 98px right of centre (the card's half-width plus a 10px gap). */
+  .contact-section { --orange-right: min(-14px, calc(50% - 98px - var(--orange-w) * 1.3)); }
+  /* Phones: the right tree is a small corner picture, so the falling orange is a little bigger relative to it and drops
+     the full height of the black hero (several times the tree's height); the hero clips it at its bottom edge so it
+     never shows over Project Snapshots. */
+  .pond-hero { overflow: clip; }
+  .pond-hero.is-dropping .falling-orange { width: 22%; animation-name: orange-fall-phone; }
+  /* Phones: a thinner stream. */
+  .juice-pour { width: 5px; }
+  .contact-block .email-link { width: 40px; height: 40px; }
+  .email-link svg { width: 20px; height: 20px; }
+  .contact-block .contact-links { gap: 10px; margin-top: .5cm; padding: 14px 16px 12px; }
+  .contact-block .contact-links::before, .contact-block .contact-links::after { width: 11px; height: 11px; }
+  .lets-connect { font-size: 18px; }
+  /* Phones: right under the name, a square headshot on the left with "from raw ideas -> real impact" and the
+     description beside it on the right. */
+  .hero-head { width: 100%; }
+  .hero-intro { width: auto; min-width: 0; gap: 14px; margin-top: 16px; }
+  /* Narrower than it is tall, trimmed from both sides (more from the left, where the shoulder is); the face stays in frame. */
+  .headshot { width: 78px; height: 112px; aspect-ratio: auto; object-position: 52% 50%; border-radius: 6px; }
+  /* The narrow column lets the handwritten line wrap onto two lines at a fixed size (Project Snapshots matches it). */
+  .hero-about .section-kicker { white-space: normal; font-size: 18px; line-height: 1.15; margin-bottom: 4px; }
+  /* Small enough that the shortened description ends level with the bottom of the photo. */
+  .hero-about p { font-size: 13px; line-height: 1.3; }
+  .explore-theme p { font-size: 12px; }
+  .xp-card .xp-card-body { font-size: 12px; }
+  .theme-body { font-size: 12px; }
+  /* phones: each label sits above its value */
+  /* Phones: the hero is tall and narrow, so the right tree just sits in the top-right corner. */
+  .hero-branches-right { height: auto; width: 41.25%; }
+  /* the left tree, about 25% bigger (its box grows with it so the picture isn't cut off) */
+  .hero-branches { aspect-ratio: 1280 / 684; background-size: 47.5% auto; }
+}
+@media (prefers-reduced-motion: reduce) { .theme-pill-indicator { transition: none; } .theme-stack .explore-theme { transition: none; } .explore-card, .project-card { transition: none; } .dangling-orange.orange-hit.is-shaking { animation: none; } .email-link { transition: none; } html { scroll-behavior: auto; } .hero-branches, .hero-branches-right .tree-art, .dangling-orange { animation: none; } .juice-pour { display: none; } :is(.project-deck, :is(#exploring, #highlights-box, #experience-box) .explore-intro) .theme-stack { transition: none; } .brand { transition: none; } .nav-indicator { transition: opacity .2s; } .nav-links { transition: none; } }

@@ -37,17 +37,18 @@ const navItems = [
 // "What I'm Exploring" intro: the themes between the opening and closing lines.
 const exploreThemes = [
   {
+    title: "AI That Businesses Can Depend On",
+    body:
+      "At Penumbra, I built a platform that translated complex device information into something sales reps could use with " +
+      "physicians. I want to do the same for enterprise AI: organizing information and designing AI interactions so teams " +
+      "get trustworthy answers and make better business decisions.",
+  },
+  {
     title: "Designing for Every Mind",
     body:
       "Most software doesn’t account for how much cognitive load a person can handle in a given moment. I want to design " +
       "interfaces that adapt to people who are tired, older, reading in a second language, or living with a cognitive " +
       "disability.",
-  },
-  {
-    title: "AI that Businesses Can Depend On",
-    body:
-      "I’m interested in how we can organize information and design AI interactions so people get trustworthy answers and make " +
-      "better decisions.",
   },
 ];
 
@@ -57,9 +58,9 @@ const exploreTopics: { title: string; subtitle?: string; body?: string }[] = [
     title: "AI Infrastructure",
     subtitle: "What Powers AI, and What It Costs",
     body:
-      "Studying AI and machine learning made me realize how much of its future depends on what’s underneath: compute, " +
-      "energy, and governance. I want to help build infrastructure that lets AI scale responsibly and shrinks its " +
-      "environmental footprint.",
+      "AI’s future depends on what’s underneath: compute, energy, and governance. Buyers want to know what it costs to run, " +
+      "how much power it draws, and whether they can trust it. I want to help AI infrastructure companies answer those " +
+      "questions clearly, equipping sales teams and customers to adopt AI responsibly.",
   },
   {
     title: "What’s Underrated",
@@ -80,8 +81,8 @@ const exploreTopics: { title: string; subtitle?: string; body?: string }[] = [
 ];
 
 
-// The skills Clinical Education Hub drew on, by area: a bordered two-by-two table (Product and Design in the left column,
-// Technical and Clinical in the right; one column on phones), each area in its own colour.
+// The skills Clinical Education Hub drew on, by area: a bordered two-by-two table (Product and Marketing in the left column,
+// Technical and Design in the right; one column on phones), each area in its own colour.
 function ProjectSkills() {
   return (
     <dl className="skill-grid">
@@ -90,16 +91,16 @@ function ProjectSkills() {
         <dd>product discovery, user research, survey research, problem framing, feature prioritization, MVP scoping, roadmap planning, stakeholder alignment</dd>
       </div>
       <div className="is-pink">
-        <dt>Marketing &amp; Design</dt>
-        <dd>information architecture, content strategy, responsive design, scientific communication, voice-of-customer research, audience segmentation, multichannel content, value storytelling, competitive intelligence</dd>
+        <dt>Marketing</dt>
+        <dd>positioning &amp; messaging, sales enablement, go-to-market planning, competitive intelligence, audience segmentation, value storytelling, scientific communication</dd>
       </div>
       <div className="is-green">
         <dt>Technical</dt>
-        <dd>Next.js, React, TypeScript, Vercel, Git/GitHub, AI-assisted development</dd>
+        <dd>Python, data analysis, machine learning fundamentals, prompt engineering, LLM APIs, Next.js, React, TypeScript, responsive design, Git/GitHub, AI-assisted development</dd>
       </div>
       <div className="is-blue">
-        <dt>Clinical</dt>
-        <dd>clinical literature review, evidence verification, endpoint interpretation</dd>
+        <dt>Design</dt>
+        <dd>information architecture, user flows, wireframing, prototyping, usability testing, UX writing, visual hierarchy, accessibility, responsive design, user research</dd>
       </div>
     </dl>
   );
@@ -250,72 +251,118 @@ const projectImpact: { title: string; body: React.ReactNode }[] = [
 
 // Experiences and Outcomes: five wide cards stacked one above the other. Each card lists organizations, each with its
 // role(s) and dates (or other detail, such as a GPA) on the right.
-type XpRole = { title: string; meta?: string };
-function XpOrg({ name, roles }: { name: string; roles: XpRole[] }) {
+type XpRole = { title: string; meta?: string; note?: string };
+// A role note's **double-starred** phrases are drawn in bold (the résumé's key points).
+function withBold(text: string) {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 ? <strong key={i}>{part}</strong> : part));
+}
+function XpOrg({ name, roles, children }: { name: string; roles: XpRole[]; children?: React.ReactNode }) {
   return (
     <div className="xp-org">
       <h4 className="xp-org-name">{name}</h4>
       {roles.map((role) => (
         <div key={role.title} className="xp-role">
           <p className="xp-role-title">{role.title}{role.meta && <span className="xp-meta">{role.meta}</span>}</p>
+          {role.note && <p className="xp-role-note">{withBold(role.note)}</p>}
         </div>
+      ))}
+      {children}
+    </div>
+  );
+}
+
+// The cards follow the résumé's sections and order (public/resume.pdf), newest first within each.
+const productMarketing = (
+  <XpOrg name="Penumbra, Inc." roles={[
+    { title: "Technical Product Owner, Clinical Education Hub", meta: "Contract · Oct 2026–Present", note: "Own requirements and roadmap for the Hub’s company-wide rollout, **aligning marketing, compliance, and IT** on **content ownership**, review, and platform integration. Lead the Hub’s **phased AI roadmap**, including **semantic search** and a **citation-grounded evidence assistant** that declines when evidence is thin, with **success metrics** for time-to-evidence and citation accuracy." },
+    { title: "Neurovascular Product Marketing Intern", meta: "Jul–Sep 2026", note: "Reframed an AI-summarization request into a **retrieval and application problem** after interviewing **25+ reps**, running field surveys, auditing the ShowPad library, and joining sales training. Designed and built the **Clinical Education Hub** with **Next.js/React** and AI-assisted development, shipping a **searchable multimedia MVP** in a 4-day sprint; leadership selected it for **4,000+ sales and marketing employees**, turning the internship into a **contract product-owner role**. Supported the **launch of THUNDERBOLT**, a computer-assisted vacuum thrombectomy device, equipping **70+ neuro sales reps** with **20+ sales enablement assets** that translated **clinical data, R&D training**, and **competitive positioning** into **customer-facing value narratives**." },
+  ]} />
+);
+
+const leadership = (
+  <>
+    <XpOrg name="Medical City Dallas Adult Volunteer Program" roles={[{ title: "Vice President, Auxiliary Board", meta: "May 2025–May 2026", note: "Led operations, recruitment, and outreach for a **200+ member service organization** as **primary liaison** to hospital leadership. Grew participation in patient-centered initiatives **~6x (10 to 60+)** through new programs (NICU projects, donation drives, hospital events) and a volunteer newsletter." }]} />
+    <XpOrg name="Accessible Prosthetics Initiative" roles={[{ title: "Communications & Outreach Team Lead", meta: "Nov 2023–Jan 2026", note: "Built the nonprofit’s digital presence from zero (branded social content, targeted outreach, Canva collateral), driving **5x membership growth (15 to 75+)**. Led a **10-person fundraising team** that raised **$2,000+ in 4 months** to fund 3D-printed prosthetics for low-income and uninsured amputees. Partnered with disability advocacy groups on **assistive-tech workshops** that fed **user input** into prosthetic design, and led **event marketing** at **Abilities Expo 2024**." }]} />
+    <XpOrg name="End Overdose (Texas chapter)" roles={[{ title: "Marketing Director & Lead Crisis Response Trainer", meta: "Aug 2023–Nov 2024", note: "Launched the **first End Overdose chapter in Texas**, aligning brand and messaging with the national organization and running **multichannel campaigns** against overdose misinformation. Trained **910+ people** in overdose response, naloxone, and CPR and distributed **918+ naloxone doses**, managing procurement and logistics to scale operations." }]} />
+  </>
+);
+
+const research = (
+  <XpOrg name="Targeted Neuroplasticity Lab, Texas Biomedical Device Center" roles={[{ title: "Research Assistant", meta: "Jan 2023–Nov 2024", note: "Ran **vagus nerve stimulation (VNS)** and urodynamic experiments to restore bladder function after spinal cord injury, tracking response data in **MATLAB** across **60+ animal subjects**. Fabricated **stimulation hardware** (nerve cuffs, head caps, cables)." }]} />
+);
+
+const clinical = (
+  <>
+    <XpOrg name="ClearSky Rehabilitation Hospital" roles={[{ title: "Patient Care Tech (PCT/CNA)", meta: "Aug 2025–Dec 2025", note: "Delivered inpatient care and documented patient status for **interdisciplinary teams** under **HIPAA** and **infection-control standards**." }]} />
+    <XpOrg name="Pain Specialists of Frisco" roles={[{ title: "Front/Back Office Medical Assistant & Scribe", meta: "Jun 2024–Aug 2025", note: "Supported a **50+ patient/day** orthopedic and spine clinic across **intake, insurance verification, EMR documentation**, and **imaging** during **interventional procedures**, gaining a ground-level view of patient journeys and provider workflows." }]} />
+  </>
+);
+
+// The AI & ML program's progress: three columns (completed, in progress, next up), each topic a bold name and a line on it.
+const courseProgress: { heading: string; items: { name: string; text: string }[] }[] = [
+  { heading: "Completed", items: [
+    { name: "Predictive modeling.", text: "Regression, decision trees, clustering, ensemble methods, and neural networks. I can frame a business question as a modeling problem, pick a sensible approach, and explain the accuracy vs. interpretability tradeoff to non-technical stakeholders." },
+    { name: "Python & data analysis.", text: "Cleaning, exploring, and visualizing data to find the story before building anything." },
+    { name: "Applied AI workflows.", text: "Prompt engineering, agentic workflows, building on LLM APIs, and weighing performance against cost when AI goes into production." },
+  ] },
+  { heading: "In Progress", items: [
+    { name: "Generative AI & LLMs.", text: "Prompt design, evaluating GenAI output quality, retrieval-augmented generation (grounding answers in trusted sources), and responsible AI practices like bias, safety, and governance." },
+  ] },
+  { heading: "Next Up", items: [
+    { name: "Agentic AI.", text: "Single- and multi-agent systems, and how to evaluate whether an agent is actually doing the job." },
+    { name: "Deployment.", text: "Taking ML and GenAI from prototype to production." },
+    { name: "Electives.", text: "Multimodal AI, computer vision, recommendation systems, statistical learning, and SQL." },
+  ] },
+];
+
+function CourseProgress() {
+  return (
+    <div className="course-progress">
+      {courseProgress.map((col) => (
+        <section key={col.heading} className="course-col" aria-label={col.heading}>
+          <h5 className="course-col-head">{col.heading}</h5>
+          <ul className="course-col-list">
+            {col.items.map((item) => (
+              <li key={item.name}><strong>{item.name}</strong> {item.text}</li>
+            ))}
+          </ul>
+        </section>
       ))}
     </div>
   );
 }
 
-const productMarketing = (
-  <>
-    <XpOrg name="Penumbra, Inc." roles={[
-      { title: "Product Owner, Clinical Education Hub", meta: "Contract · Oct 2026–Present" },
-      { title: "Product Marketing Intern", meta: "Jul–Sep 2026" },
-    ]} />
-    <XpOrg name="Accessible Prosthetics Initiative" roles={[{ title: "Communications & Outreach Team Lead", meta: "Nov 2023–Jan 2026" }]} />
-    <XpOrg name="End Overdose (Texas chapter)" roles={[{ title: "Marketing Director & Lead Crisis Response Trainer", meta: "Aug 2023–Nov 2024" }]} />
-    <XpOrg name="Period Project" roles={[{ title: "Marketing Director", meta: "Aug 2022–Feb 2024" }]} />
-  </>
-);
-
-const research = (
-  <XpOrg name="Targeted Neuroplasticity Lab, Texas Biomedical Device Center" roles={[{ title: "Research Assistant", meta: "Jan 2023–Nov 2024" }]} />
-);
-
-const clinical = (
-  <>
-    <XpOrg name="Pain Specialists of Frisco" roles={[{ title: "Medical Assistant & Scribe", meta: "Jun 2024–Aug 2025" }]} />
-    <XpOrg name="ClearSky Rehabilitation Hospital" roles={[{ title: "Patient Care Tech (PCT/CNA)", meta: "Aug 2025–Dec 2025" }]} />
-    <XpOrg name="Medical City Dallas" roles={[{ title: "VP of Auxiliary Board; Day Captain", meta: "Mar 2023–May 2026" }]} />
-    <XpOrg name="Three Oaks Hospice" roles={[{ title: "Activities Coordinator; Co-Author, Last Writers Project", meta: "Aug 2023–Aug 2024" }]} />
-  </>
-);
-
-const leadership = (
-  <>
-    <XpOrg name="Freshman Engagement Program" roles={[{ title: "First Year Leader & Orientation Leader", meta: "Jan 2023–Dec 2025" }]} />
-    <XpOrg name="Hearts for Homeless" roles={[{ title: "Outreach & Volunteer Recruitment Chair", meta: "Aug 2022–Jan 2024" }]} />
-    <XpOrg name="AMWA Rays of Light" roles={[{ title: "Volunteer", meta: "Aug 2022–Jun 2023" }]} />
-  </>
-);
-
 const education = (
   <>
-    <XpOrg name="The University of Texas at Dallas" roles={[{ title: "B.S. Medical Neuroscience, Minor in Public Health", meta: "GPA 3.7" }]} />
-    <XpOrg name="The University of Texas at Austin" roles={[{ title: "Post-Graduate Program in AI & Machine Learning", meta: "in progress" }]} />
-    <XpOrg name="Certifications & honors" roles={[
-      { title: "EMT-B License (Texas DSHS)" },
-      { title: "Dean’s List", meta: "Fall 2024" },
-      { title: "Dean’s Service Milestone Award", meta: "2024" },
-    ]} />
+    <XpOrg name="The University of Texas at Austin" roles={[{
+      title: "Post Graduate Program in AI & Machine Learning (PGP-AIML)", meta: "Aug 2026–Feb 2027 · in progress",
+      note: "I’m building the technical fluency to make better product calls on AI: knowing what a model can and can’t do, how to tell when it’s working, and what it costs to ship it. I’m especially interested in making AI reliable enough for enterprises and organizing information so people can make the right decisions.",
+    }]}>
+      <CourseProgress />
+    </XpOrg>
+    <XpOrg name="The University of Texas at Dallas" roles={[{
+      title: "B.S. Medical Neuroscience, Minor in Public Health", meta: "Aug 2022–Aug 2026 · GPA 3.7",
+      note: "Studied how people perceive, learn, and make decisions, and how health systems serve whole populations. Built a foundation in reading clinical evidence, running research, and turning complex science into clear takeaways, the same skills I now use to connect technology with the people it serves.",
+    }]}>
+      <div className="xp-sub">
+        <p className="xp-sub-head">Certifications &amp; honors:</p>
+        <ul className="xp-sub-list">
+          <li>Dean’s List (Fall 2024)</li>
+          <li>Dean’s Service Milestone Award (2024)</li>
+          <li>EMT-B License (Texas DSHS)</li>
+        </ul>
+      </div>
+    </XpOrg>
   </>
 );
 
 // (tone: the colour of the boxes around the card's organization names)
 const experiences: { title: string; body: React.ReactNode; tone?: string }[] = [
-  { title: "Product & Marketing", body: productMarketing, tone: "pink" },
-  { title: "Research", body: research, tone: "green" },
-  { title: "Clinical Experience", body: clinical, tone: "blue" },
-  { title: "Leadership & Community", body: leadership, tone: "orange" },
   { title: "Education & Certifications", body: education },
+  { title: "Product & Marketing", body: productMarketing, tone: "pink" },
+  { title: "Leadership & Growth Marketing", body: leadership, tone: "orange" },
+  { title: "Research", body: research, tone: "green" },
+  { title: "Clinical & Healthcare Operations", body: clinical, tone: "blue" },
 ];
 
 function ExperienceList() {
@@ -452,7 +499,6 @@ function ThemeDeck({ items, label, heading, className = "" }: { items: { title: 
 
 export default function KoiPondHero() {
   const reduceMotion = useReducedMotion();
-
 
   // Menu (phone and desktop): pinned to the screen. Press the bar and slide along it; a highlight follows the
   // finger/mouse and the page scrolls to whichever section is under it. A click or tap (or Enter on a focused item)
@@ -754,10 +800,10 @@ export default function KoiPondHero() {
         {/* Section 3 — Experience & impact, with contact just below. */}
         <section id="experience" className="page-section experience-section" aria-labelledby="experience-title">
           <h2 id="experience-title" className="section-title featured-title">Experiences and Outcomes <span className="featured-project">From Patient Care to Product</span></h2>
-          {/* A one-line summary of the path so far, and the résumé to download (public/resume.pdf). */}
+          {/* A one-line summary of the path so far, and the résumé, which opens in a new tab (public/resume.pdf). */}
           <div className="xp-intro">
             <p>I&rsquo;ve delivered care, researched it, and marketed it. In every role, I saw the same problem: <mark>critical information was scattered</mark>. Now I <mark>build products</mark> that make it accessible and usable, and I&rsquo;m drawn to <mark>backing the companies solving this issue at scale</mark>.</p>
-            <a className="resume-link" href="/resume.pdf" download>
+            <a className="resume-link" href="/resume.pdf" target="_blank" rel="noopener noreferrer">
               Download résumé
               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
@@ -775,7 +821,7 @@ export default function KoiPondHero() {
           {/* Each time the section is scrolled to, juice pours from its top edge into the lower juice glass for 3 seconds. */}
           <span className="juice-pour" aria-hidden="true" />
           <div id="contact" className="contact-block">
-
+            <p className="contact-invite">Have an idea, a question, or a problem worth solving? I&rsquo;m always happy to talk it through.</p>
             <h3 className="lets-connect">Let&rsquo;s Connect.</h3>
             <div className="contact-links">
               {/* Opens the visitor's email app with a new message to this address. */}

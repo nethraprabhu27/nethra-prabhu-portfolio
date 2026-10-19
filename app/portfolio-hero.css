@@ -194,6 +194,8 @@ body:has(.theme-light) { background: #fff; color: #000; }
 /* Experiences and Outcomes: a white section, at least 3 inches tall (taller to fit its card box), with centered dark
    text; its heading is marker, the size of "Project Highlights" (that of the hero's "from raw ideas" line). */
 .experience-section { padding-top: clamp(8px, calc(.8 * var(--vw)), 12px); min-height: 3in; box-sizing: border-box;
+  /* half the usual section padding below the last card, so Contact follows closer */
+  padding-bottom: clamp(32px, calc(4 * var(--vw)), 60px);
   background: #fff; color: #111; text-align: center; }
 /* the copy of the "I'm interested in" box under the heading keeps its cards' text left-aligned, as in the original */
 /* Under the Experiences heading: a short summary and a "Download résumé" button with a download arrow, styled like the green
@@ -237,7 +239,7 @@ body:has(.theme-light) { background: #fff; color: #000; }
 @media (max-width: 700px) { .xp-org-name { font-size: clamp(13px, calc((7.8vw - 12.75px) * .9), 20px); } }
 /* In a coloured card, each organization's name sits in a box of that colour with a dark outline (shaped like the green
    boxes under "Clinical Education Hub"; the colours are the skill stack's): Product & Marketing pink, Research green,
-   Clinical Experience turquoise-blue, Leadership & Community orange. */
+   Leadership & Growth Marketing orange, Clinical & Healthcare Operations turquoise-blue. */
 .xp-card:is(.tone-pink, .tone-green, .tone-blue, .tone-orange) .xp-org-name { display: inline-block; padding: .25em .55em;
   border: 1px solid #111; border-radius: 6px; }
 .xp-card.tone-pink .xp-org-name { background: #ffc4dd; }
@@ -245,6 +247,29 @@ body:has(.theme-light) { background: #fff; color: #000; }
 .xp-card.tone-blue .xp-org-name { background: #a6ece4; }
 .xp-card.tone-orange .xp-org-name { background: #ffc98f; }
 .xp-role { margin-top: 8px; }
+/* A role's optional short description, in the card's body text under its title. */
+.xp-card p.xp-role-note { margin: 6px 0 0; }
+/* A labelled list inside an entry (Certifications & honors under UT Dallas): the label in the headings' monospace
+   capitals, the items in the card's body text. */
+.xp-sub { margin-top: 10px; }
+.xp-card p.xp-sub-head { margin: 0 0 4px; font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800;
+  font-size: .95em; letter-spacing: .04em; text-transform: uppercase; color: #111; }
+/* each item in its own white box with a dark outline, side by side (wrapping when there isn't room) */
+.xp-sub-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 0; padding: 0; list-style: none; }
+.xp-sub-list li { padding: .3em .7em; background: #fff; border: 1px solid #111; border-radius: 6px; }
+/* The AI & ML program's progress under UT Austin: a three-column table (Completed, In Progress, Next Up) outlined in the
+   cards' hard black lines, each column headed in the headings' monospace capitals; on phones the columns stack. */
+.course-progress { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 12px; border: 2px solid #111; border-radius: 8px; overflow: hidden; }
+.course-col + .course-col { border-left: 2px solid #111; }
+.course-col-head { margin: 0; padding: 8px 12px; border-bottom: 2px solid #111; background: #eee; color: #111; text-align: center;
+  font-family: var(--font-inconsolata), 'Courier New', monospace; font-weight: 800; font-size: .95em; letter-spacing: .04em; text-transform: uppercase; }
+.course-col-list { margin: 0; padding: 10px 12px; list-style: none; }
+.course-col-list li + li { margin-top: 10px; }
+.course-col-list strong { color: #111; }
+@media (max-width: 700px) {
+  .course-progress { grid-template-columns: 1fr; }
+  .course-col + .course-col { border-left: 0; border-top: 2px solid #111; }
+}
 /* Each role's title in bold Lora (the cards' serif), with its dates (or type
    and dates) in the card headings' monospace capitals, in grey, pushed to the right edge (dropping under the title, still
    on the right, when there isn't room). */
@@ -393,6 +418,21 @@ main { overflow: clip; }
   .project-deck .theme-stack:hover { scale: 1.05; translate: 0 -3px; filter: drop-shadow(0 26px 30px rgba(0,0,0,.55)); }
   :is(#exploring, #highlights-box, #experience-box) .explore-intro .theme-stack:hover { scale: 1.05; translate: 0 -4px; filter: drop-shadow(0 18px 22px rgba(90,60,0,.4)); }
 }
+/* The résumé cards (Education & Certifications, Product & Marketing, …), the program table under UT Austin, each
+   certification box under UT Dallas and the Designing & Building tables pop up
+   the same way when hovered: a springy lift with a deeper shadow. The cards are wide, so they grow less; the table grows
+   only as far as its card's padding, so the card never clips it. */
+.xp-card, .course-progress, .xp-sub-list li, #highlights-box .bets-intro :is(.problem-table, .decision-table) { position: relative; transition: scale .35s cubic-bezier(.34, 1.56, .64, 1), translate .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .35s ease; }
+.course-progress, #highlights-box .bets-intro :is(.problem-table, .decision-table) { background: #fff; }
+@media (hover: hover) {
+  .xp-card:hover { z-index: 2; scale: 1.02; translate: 0 -4px; box-shadow: 0 22px 36px -14px rgba(0,0,0,.45), 0 6px 14px -6px rgba(0,0,0,.2); }
+  .course-progress:hover { z-index: 2; scale: 1.03; translate: 0 -3px; box-shadow: 0 16px 26px -12px rgba(0,0,0,.45); }
+  /* each certification box is small, so it can pop as much as the "I'm interested in" cards */
+  .xp-sub-list li:hover { z-index: 2; scale: 1.08; translate: 0 -3px; box-shadow: 0 10px 16px -8px rgba(0,0,0,.45); }
+  /* the tables in the Designing & Building cards, like the program table */
+  #highlights-box .bets-intro :is(.problem-table, .decision-table):hover { z-index: 2; scale: 1.04; translate: 0 -3px; box-shadow: 0 14px 22px -10px rgba(0,0,0,.45); }
+}
+@media (prefers-reduced-motion: reduce) { .xp-card, .course-progress, .xp-sub-list li, #highlights-box .bets-intro :is(.problem-table, .decision-table) { transition: none; } }
 /* The "What I'm Exploring" area (its heading and the two card decks) sits on a band in the oranges' yellow,
    with dark headings, dark number pills and soft dark card edges. */
 :is(#exploring, #highlights-box, #experience-box) { position: relative; clip-path: inset(0 -100vmax);
@@ -560,7 +600,7 @@ main { overflow: clip; }
    size as the other cards' text. */
 .theme-body { font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-size: calc(clamp(16px, calc(1.2 * var(--vw)), 19px) * .8);
   line-height: 1.5; color: #333; }
-/* The Skill Stack card: a bordered two-by-two table, Product and Design down the left column, Technical and Clinical down
+/* The Skill Stack card: a bordered two-by-two table, Product and Marketing down the left column, Technical and Design down
    the right (one column on phones), dark rules between the cells. Each cell is centred: the area's name in the card headings'
    lettering above its skills in Inconsolata. */
 .skill-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto auto; grid-auto-flow: column;
@@ -676,6 +716,11 @@ main { overflow: clip; }
   border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff1c9 0 9%, #ffb347 22%, #f07a12 60%, #b8460a 100%);
   box-shadow: 2px 3px 4px rgba(0,0,0,.4), inset -1px -2px 3px rgba(0,0,0,.25); z-index: 2; }
 .contact-block .contact-links::after { left: 100%; }
+/* The invitation above "Let's Connect": the about section's Lora in the section's off-white, wrapped to two short lines.
+   It hangs just above the block (not inside its height), so the heading and icon card stay where they were. */
+.contact-invite { position: absolute; bottom: 100%; left: 50%; translate: -50% 0; width: max-content; margin: 0 0 14px; max-width: min(30em, calc(100vw - 40px)); font-family: var(--font-lora), Georgia, 'Times New Roman', serif;
+  font-size: calc(clamp(16px, calc(1.2 * var(--vw)), 19px) * .9); line-height: 1.5; color: #f4eedf; text-wrap: balance; }
+@media (max-width: 700px) { .contact-invite { max-width: min(22em, calc(100vw - 40px)); font-size: 13px; margin-bottom: 8px; } }
 .lets-connect { margin: 0; font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400; color: #ffbb33;
   font-size: calc(var(--section-head-size) * .8); letter-spacing: .01em; line-height: 1.2; text-transform: uppercase; }
 /* On the paper, the logos are dark; hovering inverts one to black with a white logo, and the handle label is dark too. */

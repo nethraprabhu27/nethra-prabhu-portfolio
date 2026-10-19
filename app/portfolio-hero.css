@@ -485,13 +485,15 @@ main { overflow: clip; }
 /* (the section ends right under the box, so Experiences and Outcomes follows close behind) */
 .featured-section:has(#highlights-box) { padding-bottom: 0; }
 .featured-section:has(#highlights-box) .snapshots-row { margin-bottom: 0; }
-/* A one-line summary of the project at the top of the box, above its cards, in Permanent Marker (dark, on the box's white),
-   in the cards' grid so it spans exactly their row. */
-#highlights-box .hl-summary { grid-row: 1; grid-column: 1 / -1; margin: calc(-1 * clamp(8px, calc(1 * var(--vw)), 14px)) 0 clamp(8px, calc(1 * var(--vw)), 14px);
-  text-align: center; text-wrap: balance; font-family: var(--font-marker), 'Comic Sans MS', cursive; font-weight: 400;
-  /* the size of "Project Highlights" (undoing the cards' 85% zoom beside screens wider than phones) */
-  font-size: calc(var(--section-head-size) * .8 / .85); line-height: 1.2; color: #111; }
-@media (max-width: 700px) { #highlights-box .hl-summary { font-size: 18px; margin-top: -4px; } }
+/* A one-line summary of the project at the top of the box, above its cards (dark, on the box's white), in the cards' grid
+   so it spans their row. Lettered like the Experiences summary ("I've delivered care…"): Lora, the same size and the
+   same 820px-wide column, centred. */
+#highlights-box .hl-summary { grid-row: 1; grid-column: 1 / -1; justify-self: center; max-width: calc(820px / .85);
+  margin: calc(-1 * clamp(8px, calc(1 * var(--vw)), 14px)) 0 clamp(8px, calc(1 * var(--vw)), 14px);
+  text-align: center; text-wrap: balance; font-family: var(--font-lora), Georgia, 'Times New Roman', serif; font-weight: 400;
+  /* the Experiences summary's size (undoing the cards' 85% zoom beside screens wider than phones) */
+  font-size: calc(var(--section-head-size) * .6 / .85); line-height: 1.4; color: #111; }
+@media (max-width: 700px) { #highlights-box .hl-summary { font-size: 16px; max-width: 820px; margin-top: -4px; } }
 /* Its key phrases (and those in the Experiences summary) are marked in lemon yellow, like a highlighter pen (carried onto
    each line when a phrase wraps). */
 #highlights-box .hl-summary mark, .xp-intro p mark { color: inherit; background: linear-gradient(transparent 22%, #fff44f 22%, #fff44f 88%, transparent 88%);

@@ -255,6 +255,9 @@
     .hero-s .photo{justify-self:start;max-width:220px}
     .hero-s .refs ol{grid-template-columns:1fr}
   }
+
+  /* layout guide: tan frame 1cm inside the screen edges. Delete this rule and the .edge-guide div to remove. */
+  .edge-guide{position:fixed;inset:1cm;border:2px solid var(--accent);border-radius:4px;pointer-events:none;z-index:9999}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
   @media (max-width:900px){
@@ -277,6 +280,7 @@
 </style>
 </head>
 <body>
+<div class="edge-guide" aria-hidden="true"></div>
 
 <header class="top" id="top">
   <div class="bar-in">

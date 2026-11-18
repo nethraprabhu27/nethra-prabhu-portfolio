@@ -256,8 +256,11 @@
     .hero-s .refs ol{grid-template-columns:1fr}
   }
 
-  /* layout guide: tan frame 1cm inside the screen edges. Delete this rule and the .edge-guide div to remove. */
-  .edge-guide{position:fixed;inset:1cm;border:2px solid var(--accent);border-radius:4px;pointer-events:none;z-index:9999}
+  /* layout guide: shaded tan bands, 1cm wide, on the left and right edges below the top bar. Delete these rules and the .edge-guide div to remove. */
+  .edge-guide{position:fixed;top:77px;bottom:0;left:0;right:0;pointer-events:none;z-index:40}
+  .edge-guide::before,.edge-guide::after{content:"";position:absolute;top:0;bottom:0;width:1cm;background:var(--accent)}
+  .edge-guide::before{left:0}
+  .edge-guide::after{right:0}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
   @media (max-width:900px){

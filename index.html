@@ -30,9 +30,8 @@
 
 
   /* top bar */
-  /* floating pill menu: hides when scrolling down, comes back when scrolling up */
+  /* floating pill menu: always visible while scrolling */
   header.top{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:30;width:max-content;max-width:calc(100% - 24px);background:rgba(251,248,243,.72);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border:1px solid rgba(221,209,191,.85);border-radius:999px;box-shadow:0 12px 32px -16px rgba(22,20,18,.35);transition:transform .35s ease,opacity .35s ease}
-  header.top.hide{transform:translate(-50%,-150%);opacity:0}
   .bar-in{display:flex;align-items:center;gap:20px;height:56px;padding:0 8px 0 24px}
   .mark{display:flex;align-items:center;gap:16px;text-decoration:none;flex:none}
   .mark b{font-weight:800;font-size:15px;line-height:1;white-space:nowrap;letter-spacing:.02em;text-transform:uppercase}
@@ -528,9 +527,7 @@
   });
   try{const c=document.getElementById('clock');const t=()=>{c.textContent=new Intl.DateTimeFormat('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/Los_Angeles'}).format(new Date())+' in San Francisco'};t();setInterval(t,30000)}catch(e){}
   const hdr=document.getElementById('top');
-  let lastY=scrollY;
-  addEventListener('scroll',()=>{const y=scrollY;const menuOpen=document.getElementById('mobnav').classList.contains('open');
-    hdr.classList.toggle('hide',!menuOpen&&y>lastY&&y>120);lastY=y},{passive:true});
+
 
   // menu: dropdowns, mobile panel, active section
   const items=[...document.querySelectorAll('.menu > li')];

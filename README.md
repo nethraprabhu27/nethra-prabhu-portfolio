@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nethra Prabhu portfolio
 
-## Getting Started
+Two pages, one site:
 
-First, run the development server:
+- `/` — general version (AI, data, enterprise software)
+- `/healthtech` — healthtech and medical device version
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Files
+
+```
+index.html                  general page
+healthtech/index.html       healthtech page
+Nethra_Prabhu_Resume.pdf    linked from both pages' Résumé buttons
+vercel.json                 static site settings (no build step), clean URLs
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploying
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Push to `main` and Vercel deploys automatically. `vercel.json` sets the framework to none, so there is no build step.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The previous Next.js site is saved on the `old-portfolio` branch.
 
-## Learn More
+## Check after deploying
 
-To learn more about Next.js, take a look at the following resources:
+- `your-url.vercel.app` shows the general page
+- `your-url.vercel.app/healthtech` shows the healthtech page
+- Résumé buttons open the PDF on both pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Rolling back
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Vercel → Deployments → pick an older deployment → Promote to Production.
+The old code also stays on the `old-portfolio` branch.
 
-## Deploy on Vercel
+## Updating the résumé
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Replace `Nethra_Prabhu_Resume.pdf` with a file of the same name and push.

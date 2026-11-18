@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nethra Prabhu — Product & Product Marketing</title>
+<meta name="description" content="Nethra Prabhu: technical product owner at Penumbra. Product and product marketing for AI and data products.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F7F6;
+    --surface:#FFFFFF;
+    --ink:#122421;
+    --muted:#566864;
+    --rule:#D3DCD9;
+    --cite:#2344C4;
+    --cite-wash:#E3E8FA;
+    --measure:68ch;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 0}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--cite);outline-offset:3px;border-radius:2px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+  /* nav */
+  header.top{position:sticky;top:0;z-index:10;background:rgba(245,247,246,.92);backdrop-filter:blur(8px);border-bottom:1px solid transparent;transition:border-color .2s}
+  header.top.scrolled{border-bottom-color:var(--rule)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-weight:700;text-decoration:none;font-size:17px;letter-spacing:-.01em}
+  .top nav{display:flex;gap:28px;font-size:15px}
+  .top nav a{text-decoration:none;color:var(--muted)}
+  .top nav a:hover{color:var(--ink)}
+  .top nav a.resume{color:var(--ink);font-weight:600;border:1.5px solid var(--ink);padding:6px 14px;border-radius:999px}
+  .top nav a.resume:hover{background:var(--ink);color:var(--paper)}
+
+  /* hero */
+  .hero{padding:88px 0 72px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:72px;align-items:end}
+  .status{display:inline-flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);margin:0 0 28px}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:#1F9D6B;box-shadow:0 0 0 4px rgba(31,157,107,.15)}
+  h1{font-size:clamp(40px,6vw,74px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 32px;max-width:16ch;text-wrap:balance}
+  .lede{font-size:clamp(18px,1.6vw,21px);line-height:1.6;max-width:36em;margin:0}
+  sup.c{font-size:.62em;line-height:0;vertical-align:.7em;margin-left:1px}
+  sup.c button{all:unset;cursor:pointer;color:var(--cite);font-weight:700;padding:0 3px;border-radius:4px;font-feature-settings:"tnum" 1}
+  sup.c button:hover,sup.c button.on{background:var(--cite-wash)}
+  sup.c button:focus-visible{outline:2px solid var(--cite);outline-offset:1px}
+  .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px}
+  .btn{display:inline-block;text-decoration:none;font-weight:600;font-size:16px;padding:13px 22px;border-radius:999px;border:1.5px solid var(--ink)}
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn.primary:hover{background:var(--cite);border-color:var(--cite)}
+  .btn.ghost:hover{background:var(--surface)}
+
+  .refs{border-top:2px solid var(--ink);padding-top:18px}
+  .refs h2{font-size:15px;font-weight:600;margin:0 0 6px;color:var(--muted)}
+  .refs ol{list-style:none;margin:0;padding:0}
+  .refs li{display:grid;grid-template-columns:28px 1fr;gap:4px;padding:14px 10px 14px 0;border-bottom:1px solid var(--rule);font-size:15px;line-height:1.5;transition:background .25s;border-radius:4px}
+  .refs li .n{color:var(--cite);font-weight:700;font-feature-settings:"tnum" 1;padding-left:6px}
+  .refs li strong{display:block;font-weight:600;color:var(--ink)}
+  .refs li span.d{color:var(--muted)}
+  .refs li.on{background:var(--cite-wash)}
+
+  /* sections */
+  section.block{padding:96px 0;border-top:1px solid var(--rule)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:48px;margin-bottom:56px}
+  .sec-head h2{font-size:clamp(30px,3.4vw,42px);letter-spacing:-.025em;line-height:1.1;margin:0;font-weight:800}
+  .sec-head p{margin:0;color:var(--muted);max-width:var(--measure);align-self:end}
+
+  /* featured case */
+  .case{background:var(--surface);border:1px solid var(--rule);border-radius:20px;overflow:hidden}
+  .case-top{padding:48px 48px 40px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:48px}
+  .tag{display:inline-block;font-size:14px;font-weight:600;color:var(--cite);background:var(--cite-wash);padding:4px 12px;border-radius:999px;margin-bottom:18px}
+  .case h3{font-size:clamp(28px,3vw,38px);letter-spacing:-.025em;line-height:1.1;margin:0 0 16px;font-weight:800}
+  .case .sum{margin:0;font-size:18px;max-width:34em}
+  .facts{margin:0;display:grid;gap:14px;align-content:start}
+  .facts div{display:grid;grid-template-columns:96px 1fr;gap:12px;font-size:15px;border-bottom:1px solid var(--rule);padding-bottom:12px}
+  .facts dt{color:var(--muted)}
+  .facts dd{margin:0;font-weight:500}
+  .proof{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .proof div{padding:28px 48px;border-right:1px solid var(--rule)}
+  .proof div:last-child{border-right:0}
+  .proof b{display:block;font-size:34px;letter-spacing:-.03em;font-weight:800;font-feature-settings:"tnum" 1;line-height:1.1}
+  .proof span{font-size:15px;color:var(--muted)}
+  .story{padding:16px 48px 48px}
+  .step{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;padding:28px 0;border-bottom:1px solid var(--rule)}
+  .step:last-child{border-bottom:0;padding-bottom:0}
+  .step h4{margin:0;font-size:17px;font-weight:700}
+  .step h4 small{display:block;font-weight:400;color:var(--muted);font-size:14px;margin-top:2px}
+  .step .body p{margin:0;max-width:var(--measure)}
+  .step .body p+p{margin-top:12px}
+  .step ul{margin:10px 0 0;padding-left:20px;max-width:var(--measure)}
+  .step li{margin-bottom:6px}
+
+  /* more work */
+  .more{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:24px}
+  .work{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:36px}
+  .work.wide{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:48px}
+  .work h3{font-size:24px;letter-spacing:-.02em;line-height:1.2;margin:0 0 6px;font-weight:700}
+  .work .meta{font-size:15px;color:var(--muted);margin:0 0 18px}
+  .work p{margin:0 0 12px}
+  .work ul{margin:0;padding:0;list-style:none}
+  .work li{padding:12px 0;border-top:1px solid var(--rule);font-size:16px}
+  .work li b{font-feature-settings:"tnum" 1}
+
+  /* principles */
+  .principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px}
+  .principles h3{font-size:22px;line-height:1.25;letter-spacing:-.015em;margin:0 0 12px;font-weight:700;padding-top:20px;border-top:2px solid var(--ink)}
+  .principles p{margin:0;color:var(--muted)}
+
+  /* path */
+  .path-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:72px}
+  .about p{margin:0 0 18px;font-size:18px;max-width:34em}
+  .timeline{list-style:none;margin:0;padding:0;position:relative}
+  .timeline::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:var(--rule)}
+  .timeline li{position:relative;padding:0 0 26px 40px}
+  .timeline li::before{content:"";position:absolute;left:0;top:7px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:2px solid var(--muted)}
+  .timeline li.now::before{background:var(--cite);border-color:var(--cite)}
+  .timeline .when{font-size:14px;color:var(--muted);font-feature-settings:"tnum" 1}
+  .timeline .what{font-weight:600;display:block}
+  .timeline .where{font-size:15px;color:var(--muted)}
+  .skills{margin-top:56px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 48px}
+  .skills h3{font-size:16px;margin:0 0 8px;font-weight:700}
+  .skills p{margin:0;font-size:15px;color:var(--muted)}
+
+  /* contact */
+  footer.contact{background:var(--ink);color:var(--paper);padding:96px 0 48px}
+  footer h2{font-size:clamp(34px,4.6vw,56px);letter-spacing:-.03em;line-height:1.05;margin:0 0 20px;font-weight:800;max-width:16ch}
+  footer p{color:#B9C7C3;max-width:36em;margin:0 0 36px;font-size:18px}
+  .contact-links{display:flex;flex-wrap:wrap;gap:12px}
+  footer .btn{border-color:var(--paper);color:var(--paper)}
+  footer .btn.primary{background:var(--paper);color:var(--ink)}
+  footer .btn.primary:hover{background:#C9D4FF;border-color:#C9D4FF}
+  footer .btn.ghost:hover{background:rgba(255,255,255,.08)}
+  .fine{margin-top:80px;padding-top:24px;border-top:1px solid #2C403C;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:14px;color:#8FA29D}
+
+  /* page-load: citations resolve after the headline */
+  @media (prefers-reduced-motion:no-preference){
+    .refs li{opacity:0;transform:translateY(6px);animation:in .5s ease forwards}
+    .refs li:nth-child(1){animation-delay:.25s}
+    .refs li:nth-child(2){animation-delay:.4s}
+    .refs li:nth-child(3){animation-delay:.55s}
+    @keyframes in{to{opacity:1;transform:none}}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+  @media (max-width:900px){
+    .hero{padding:56px 0 56px}
+    .hero-grid,.sec-head,.case-top,.work.wide,.path-grid,.principles{grid-template-columns:1fr;gap:36px}
+    .case-top,.story{padding-left:28px;padding-right:28px}
+    .proof div{padding:22px 28px}
+    .step{grid-template-columns:1fr;gap:8px}
+    .more{grid-template-columns:1fr}
+    section.block{padding:72px 0}
+  }
+  @media (max-width:620px){
+    .wrap{padding:0 20px}
+    .top nav a:not(.resume){display:none}
+    .proof{grid-template-columns:1fr}
+    .proof div{border-right:0;border-bottom:1px solid var(--rule)}
+    .proof div:last-child{border-bottom:0}
+    .skills{grid-template-columns:1fr}
+    .work{padding:28px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#">Nethra Prabhu</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#principles">How I work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a class="resume" href="/Nethra_Prabhu_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="status">Open to product and product marketing roles, starting now</p>
+      <h1>I turn complex information into products people trust and use.</h1>
+      <p class="lede">
+        I start with the people using a product, find the real problem, and ship the smallest thing that proves it<sup class="c"><button type="button" data-ref="1" aria-label="Reference 1">1</button></sup>. At Penumbra, a request for AI summaries became the Clinical Education Hub, now rolling out company-wide<sup class="c"><button type="button" data-ref="2" aria-label="Reference 2">2</button></sup>. As its technical product owner, I'm leading the AI roadmap<sup class="c"><button type="button" data-ref="3" aria-label="Reference 3">3</button></sup>.
+      </p>
+      <div class="ctas">
+        <a class="btn primary" href="#hub">Read the Hub case study</a>
+        <a class="btn ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <aside class="refs" aria-labelledby="refs-h">
+      <h2 id="refs-h">References</h2>
+      <ol>
+        <li id="ref-1"><span class="n">1</span><div><strong>Research before code</strong><span class="d">25+ user interviews and a content audit, then a working MVP in a 4-day sprint.</span></div></li>
+        <li id="ref-2"><span class="n">2</span><div><strong>Selected for 4,000+ employees</strong><span class="d">Leadership chose the Hub for all of sales and marketing. My internship became a contract role.</span></div></li>
+        <li id="ref-3"><span class="n">3</span><div><strong>AI that cites its sources</strong><span class="d">Semantic search and a grounded assistant that declines when evidence is thin, measured on citation accuracy.</span></div></li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<section class="block" id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Selected work</h2>
+      <p>Product, go-to-market, and growth work, from a knowledge platform used across a 4,000-person organization to programs I built from zero.</p>
+    </div>
+
+    <article class="case" id="hub">
+      <div class="case-top">
+        <div>
+          <span class="tag">Product management</span>
+          <h3>Clinical Education Hub</h3>
+          <p class="sum">A team asked for AI to summarize documents. Research showed the real problem was finding and using the information they already had, so I built a searchable knowledge platform first. Now I'm leading its AI roadmap.</p>
+        </div>
+        <dl class="facts">
+          <div><dt>Company</dt><dd>Penumbra, Inc. (medical devices)</dd></div>
+          <div><dt>My role</dt><dd>Researcher, designer, builder, now product owner</dd></div>
+          <div><dt>Timeline</dt><dd>Jul 2026 to present</dd></div>
+          <div><dt>Built with</dt><dd>Next.js, React, Vercel, AI-assisted development</dd></div>
+        </dl>
+      </div>
+      <div class="proof">
+        <div><b>25+</b><span>sales reps interviewed</span></div>
+        <div><b>4 days</b><span>from scope to working MVP</span></div>
+        <div><b>4,000+</b><span>employees in the rollout</span></div>
+      </div>
+      <div class="story">
+        <div class="step">
+          <h4>The request<small>What I was asked for</small></h4>
+          <div class="body">
+          <p>Marketing wanted AI-generated summaries of dense clinical studies so the sales team could get through them faster.</p>
+          </div>
+        </div>
+        <div class="step">
+          <h4>The real problem<small>What research showed</small></h4>
+          <div class="body">
+          <p>I interviewed 25+ reps, ran field surveys, audited the ShowPad content library, and sat in on sales training. The content was accurate. Reps just couldn't find it, couldn't save it, and couldn't learn from it in the formats it came in.</p>
+          <p>That made it a retrieval and application problem, not a summarization problem. More AI on top of hard-to-find content would not have fixed it.</p>
+          </div>
+        </div>
+        <div class="step">
+          <h4>What I shipped<small>Scope and tradeoffs</small></h4>
+          <div class="body">
+          <p>A searchable knowledge platform, designed and built in Next.js in a 4-day sprint:</p>
+          <ul>
+            <li>Structured summaries that cite their sources</li>
+            <li>Audio versions for people on the road</li>
+            <li>Illustrated snapshots and flashcards for different learning styles</li>
+          </ul>
+          <p>I deliberately left AI out of the MVP until the core experience was validated with users, so AI would build on content people already trusted.</p>
+          </div>
+        </div>
+        <div class="step">
+          <h4>The outcome<small>What happened next</small></h4>
+          <div class="body">
+          <p>Leadership selected the Hub for company-wide rollout to 4,000+ sales and marketing employees, and turned my internship project into a contract product-owner role.</p>
+          </div>
+        </div>
+        <div class="step">
+          <h4>The AI roadmap<small>What I own now</small></h4>
+          <div class="body">
+          <p>I own requirements and the roadmap, aligning marketing, compliance, and IT on content ownership, review, and platform integration. The phased AI plan adds semantic search and a citation-grounded evidence assistant that declines to answer when the evidence is thin. Success is measured by time-to-evidence and citation accuracy.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <div class="more">
+      <article class="work wide">
+        <div>
+          <span class="tag">Product marketing</span>
+          <h3>Launching a technical product</h3>
+          <p class="meta">THUNDERBOLT launch, Penumbra, 2026</p>
+          <p>Helped launch a computer-assisted medical device by turning trial data, R&amp;D training, and competitive positioning into value stories the sales team could use with expert buyers.</p>
+        </div>
+        <ul>
+          <li>Analyzed clinical trial data and co-developed evidence-based sales messaging with the marketing team</li>
+          <li>Built <b>20</b> sales enablement assets for <b>70</b> neurovascular reps</li>
+          <li>Translated deep technical detail into customer-facing messaging</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <span class="tag">Growth marketing</span>
+        <h3>Accessible Prosthetics Initiative</h3>
+        <p class="meta">Communications and outreach lead, 2023–2026</p>
+        <ul>
+          <li>Built the nonprofit's digital presence from zero, growing membership <b>5x</b> (15 to 75+)</li>
+          <li>Led a 10-person team that raised <b>$2,000+</b> in 4 months for 3D-printed prosthetics</li>
+          <li>Ran assistive-tech workshops that fed user input into prosthetic design</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <span class="tag">Launch and scale</span>
+        <h3>End Overdose, first Texas chapter</h3>
+        <p class="meta">Marketing director, 2023–2024</p>
+        <ul>
+          <li>Launched the chapter and aligned its brand with the national organization</li>
+          <li>Trained <b>910+</b> people in overdose response, naloxone, and CPR</li>
+          <li>Distributed <b>918+</b> naloxone doses, managing procurement and logistics</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="principles">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>How I work</h2>
+      <p>Three habits, each learned on a real project.</p>
+    </div>
+    <div class="principles">
+      <div>
+        <h3>Diagnose before building</h3>
+        <p>The Hub started as a request for AI summaries. Interviews showed the problem was finding and using evidence, which changed what we built.</p>
+      </div>
+      <div>
+        <h3>Ship the smallest thing that proves it</h3>
+        <p>A 4-day MVP without AI earned the trust, and the company-wide rollout, to build AI features next.</p>
+      </div>
+      <div>
+        <h3>Trust is a feature</h3>
+        <p>One confident wrong answer can make people stop using an AI tool. I design assistants to cite sources and decline when evidence is thin, and I measure accuracy, not just usage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="about">
+  <div class="wrap path-grid">
+    <div class="about">
+      <div class="sec-head" style="display:block;margin-bottom:28px"><h2>Why I build</h2></div>
+      <p>I started in healthcare as a scribe, medical assistant, and patient care tech, and watched software get in the way of the people it was meant to help. That gap between powerful technology and the people who rely on it is the problem I want to work on, in any industry.</p>
+      <p>I bring user research, enough technical depth to build (Next.js, and AI/ML study at UT Austin), and the go-to-market skills to explain why a product matters.</p>
+      <p>I'm based in San Francisco and looking for PM and PMM roles in AI, data, and enterprise software.</p>
+    </div>
+    <div>
+      <ol class="timeline">
+        <li class="now"><span class="when">Oct 2026 to now</span><span class="what">Technical Product Owner, Clinical Education Hub</span><span class="where">Penumbra (contract)</span></li>
+        <li class="now"><span class="when">Aug 2026 to Feb 2027</span><span class="what">Post Graduate Program in AI and Machine Learning</span><span class="where">UT Austin (online)</span></li>
+        <li><span class="when">Jul to Sep 2026</span><span class="what">Neurovascular Product Marketing Intern</span><span class="where">Penumbra, Alameda</span></li>
+        <li><span class="when">Aug 2025 to Dec 2025</span><span class="what">Patient Care Tech</span><span class="where">ClearSky Rehabilitation Hospital</span></li>
+        <li><span class="when">Jun 2024 to Aug 2025</span><span class="what">Medical Assistant and Scribe</span><span class="where">Pain Specialists of Frisco</span></li>
+        <li><span class="when">Jan 2023 to Nov 2024</span><span class="what">Research Assistant, vagus nerve stimulation</span><span class="where">Texas Biomedical Device Center</span></li>
+        <li><span class="when">Aug 2022 to Aug 2026</span><span class="what">B.S. Medical Neuroscience, minor in Public Health</span><span class="where">UT Dallas, GPA 3.7</span></li>
+      </ol>
+    </div>
+  </div>
+  <div class="wrap skills">
+    <div><h3>Product</h3><p>User research, problem discovery, MVP scoping, prioritization, roadmaps, success metrics, information architecture, prototyping</p></div>
+    <div><h3>Go-to-market</h3><p>Launch, sales enablement, messaging and positioning, competitive intelligence, voice-of-customer research</p></div>
+    <div><h3>AI and technical</h3><p>Python, machine learning, LLMs and prompt engineering, Claude API and agentic workflows, Next.js/React, Git, Vercel, MATLAB</p></div>
+    <div><h3>Domain</h3><p>Healthcare and life sciences, medical devices, clinical research, regulated and compliance-heavy environments</p></div>
+  </div>
+</section>
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap">
+    <h2>Let's talk about what you're building.</h2>
+    <p>I'm available now for full-time roles and internships in the Bay Area or remote.</p>
+    <div class="contact-links">
+      <a class="btn primary" href="mailto:nethraprabhu27@gmail.com">nethraprabhu27@gmail.com</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/nethraprabhu227" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn ghost" href="/Nethra_Prabhu_Resume.pdf" target="_blank" rel="noopener">Download résumé</a>
+    </div>
+    <div class="fine"><span>Nethra Prabhu, San Francisco</span><a href="#top">Back to top</a></div>
+  </div>
+</footer>
+
+<script>
+  // citations: clicking a superscript highlights its reference
+  const btns=document.querySelectorAll('sup.c button');
+  function mark(n){
+    btns.forEach(b=>b.classList.toggle('on',b.dataset.ref===n));
+    document.querySelectorAll('.refs li').forEach(li=>li.classList.toggle('on',li.id==='ref-'+n));
+  }
+  btns.forEach(b=>{
+    b.addEventListener('mouseenter',()=>mark(b.dataset.ref));
+    b.addEventListener('focus',()=>mark(b.dataset.ref));
+    b.addEventListener('click',()=>{
+      mark(b.dataset.ref);
+      if(window.innerWidth<=900){document.getElementById('ref-'+b.dataset.ref).scrollIntoView({behavior:'smooth',block:'center'})}
+    });
+  });
+  document.querySelector('.lede').addEventListener('mouseleave',()=>mark(null));
+  const hdr=document.getElementById('top');
+  addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>8),{passive:true});
+</script>
+</body>
+</html>

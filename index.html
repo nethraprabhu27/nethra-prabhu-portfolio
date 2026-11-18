@@ -40,7 +40,7 @@
   .mark small{font-size:10.5px;line-height:1.55;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
   .menu{display:flex;align-items:center;gap:6px;margin:0 auto;list-style:none;padding:0}
   .menu > li{position:relative}
-  .menu a.nl,.menu button.nl{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-size:15.5px;font-weight:500;color:var(--ink);padding:10px 12px;border-radius:8px}
+  .menu a.nl,.menu button.nl{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding:10px 14px;border-radius:8px}
   .menu .nl:hover{background:var(--paper)}
   .menu .nl:focus-visible{outline:2px solid var(--cite);outline-offset:1px}
   .menu .nl.active{color:var(--cite)}
@@ -299,33 +299,19 @@
     </a>
     <nav aria-label="Main">
       <ul class="menu">
-        <li><button class="nl" type="button" aria-expanded="false" aria-controls="dd-work" data-sec="work">Work <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-          <ul class="drop" id="dd-work">
-            <li><a href="#launch"><b>Product launch</b><span>Explaining a medical device to sales reps</span></a></li>
-            <li><a href="#hub"><b>Clinical Education Hub</b><span>Turning a rep pain point into a product</span></a></li>
-            <li><a href="#medcity"><b>Medical City Dallas</b><span>Explaining the hospital to families</span></a></li>
-            <li><a href="#events"><b>Events and community</b><span>Training and outreach at scale</span></a></li>
-          </ul></li>
-        <li><a class="nl" href="#principles" data-sec="principles">How I work</a></li>
-        <li><button class="nl" type="button" aria-expanded="false" aria-controls="dd-about" data-sec="about">About <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-          <ul class="drop" id="dd-about">
-            <li><a href="#about"><b>Background</b><span>How I got here</span></a></li>
-            <li><a href="#skills"><b>Skills</b><span>GTM, events, product, and domain</span></a></li>
-          </ul></li>
+        <li><a class="nl" href="#work" data-sec="work">Work</a></li>
+        <li><a class="nl" href="#principles" data-sec="principles">Strategy</a></li>
+        <li><a class="nl" href="#about" data-sec="about">About</a></li>
         <li><a class="nl" href="#contact" data-sec="contact">Contact</a></li>
       </ul>
     </nav>
     <div class="acts">
-      <span class="clock" id="clock"></span>
       <a class="resume" href="/Nethra_Prabhu_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
-      <a class="round" href="https://www.linkedin.com/in/nethraprabhu227" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm7 0h3.8v1.5h.06c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.77 2.5 4.77 5.75v5.7h-4v-5.05c0-1.2-.02-2.75-1.7-2.75-1.7 0-1.95 1.3-1.95 2.65v5.15H10v-11Z"/></svg></a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="mobnav" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </div>
   <nav class="mob" id="mobnav" aria-label="Mobile">
-    <a href="#work">Work</a><a class="sub" href="#launch">Product launch</a><a class="sub" href="#hub">Clinical Education Hub</a><a class="sub" href="#medcity">Medical City Dallas</a><a class="sub" href="#events">Events and community</a>
-    <a href="#principles">How I work</a><a href="#about">About</a><a href="#contact">Contact</a>
-    <a href="https://www.linkedin.com/in/nethraprabhu227" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="#work">Work</a><a href="#principles">Strategy</a><a href="#about">About</a><a href="#contact">Contact</a>
   </nav>
 </header>
 
@@ -341,10 +327,6 @@
         <p class="lede">
         I've broken down clinical trials for sales teams, surgery updates for waiting families, and overdose response for 900+ people in my community. Now I do the same with products: start with who's listening, then prove why it matters to them.
       </p>
-        <div class="ctas">
-          <a class="btn primary" href="#launch">See the launch work</a>
-          <a class="btn ghost" href="#contact">Get in touch</a>
-        </div>
       </div>
     </div>
     <ul class="stats" aria-label="Highlights">

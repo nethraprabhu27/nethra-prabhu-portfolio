@@ -256,11 +256,11 @@
     .hero-s .refs ol{grid-template-columns:1fr}
   }
 
-  /* layout guide: shaded tan bands from the screen edge to 1cm outside the content boxes, between the top bar and the footer.
+  /* layout guide: shaded tan bands from the screen edge to 1cm + 2in outside the content boxes, between the top bar and the footer.
      1064px = content width (.wrap 1120px minus 2 x 28px padding). Delete these rules and the .edge-guide div to remove. */
   main{position:relative}
   .edge-guide{position:absolute;inset:0;pointer-events:none;z-index:1}
-  .edge-guide::before,.edge-guide::after{content:"";position:absolute;top:0;bottom:0;width:max(0px,calc((100% - 1064px) / 2 - 1cm));background:var(--accent)}
+  .edge-guide::before,.edge-guide::after{content:"";position:absolute;top:0;bottom:0;width:max(0px,calc((100% - 1064px) / 2 - 1cm - 2in));background:var(--accent)}
   .edge-guide::before{left:0}
   .edge-guide::after{right:0}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}

@@ -202,13 +202,14 @@ function start() {
   // shift: how far right the robot sits on screen (fraction of width)
   const S = [
     { z: 13.0, y: 1.1, look: 0.4, yaw: -0.42, hy: -0.6, hp: 0.16, hr: 0.22, shift: 0.21, cup: 0, reach: 0 },    // intro
-    { z: 6.9, y: 1.95, look: 1.72, yaw: -0.2, hy: -0.06, hp: 0.04, hr: 0, shift: 0.17, cup: 0, reach: 0 },       // work
-    { z: 6.9, y: 1.95, look: 1.72, yaw: -0.28, hy: 0.12, hp: 0.04, hr: -0.04, shift: 0.15, cup: 0, reach: 0 },   // strategy
     { z: 9.0, y: 1.5, look: 1.0, yaw: 0.45, hy: 0.35, hp: 0.06, hr: 0.05, shift: 0.17, cup: 0, reach: 0 },       // about
+    { z: 6.9, y: 1.95, look: 1.72, yaw: -0.2, hy: -0.06, hp: 0.04, hr: 0, shift: 0.17, cup: 0, reach: 0 },       // projects
+    { z: 6.9, y: 1.95, look: 1.72, yaw: -0.28, hy: 0.12, hp: 0.04, hr: -0.04, shift: 0.15, cup: 0, reach: 0 },   // strategy
+    { z: 7.8, y: 1.6, look: 1.2, yaw: 0.3, hy: 0.22, hp: 0.02, hr: 0, shift: 0.17, cup: 0, reach: 0 },           // experience
     { z: 8.6, y: 1.25, look: 0.65, yaw: -0.15, hy: -0.05, hp: 0.1, hr: 0, shift: 0.2, cup: 1, reach: 1 }         // contact
   ];
-  const faceFor = ['eyes', 'eyes', 'quote', 'eyes', 'happy'];
-  const secIds = ['intro', 'work', 'strategy', 'about', 'contact'];
+  const faceFor = ['eyes', 'eyes', 'eyes', 'quote', 'eyes', 'happy'];
+  const secIds = ['intro', 'about', 'work', 'strategy', 'experience', 'contact'];
   const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const lerp = (a, b, t) => a + (b - a) * t;
 

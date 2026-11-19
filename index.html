@@ -93,7 +93,7 @@
   section.strategy{min-height:max(100svh,720px)}
 
   /* ---------- INTRO ---------- */
-  .intro-col{position:absolute;left:var(--col);top:max(100px,13%);bottom:5%;width:min(760px,44vw);display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+  .intro-col{position:absolute;left:var(--col);top:max(100px,13%);bottom:5%;width:min(760px,44vw);display:flex;flex-direction:column;justify-content:center;gap:34px}
   .prompt{width:min(100%,max(300px,55%))}
   .hero-name{font-size:clamp(36px,4.2vw,72px);font-weight:800;letter-spacing:-.03em;line-height:1;margin:0}
   .prompt .tab{width:42px;height:42px;border:1px solid var(--ink);border-bottom:0;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:30px;line-height:1;padding-top:12px;background:rgba(243,236,225,.6)}
@@ -233,16 +233,15 @@
 <header class="top" id="top">
   <div class="bar-in">
     <nav aria-label="Main"><ul class="menu" title="Click, or hold and drag to move between sections"><span class="thumb" aria-hidden="true"></span>
-      <li><a href="#intro" data-sec="intro">Home</a></li>
-      <li><a href="#work" data-sec="work">Work</a></li>
-      <li><a href="#strategy" data-sec="strategy">Strategy</a></li>
       <li><a href="#about" data-sec="about">About</a></li>
+      <li><a href="#work" data-sec="work">Projects</a></li>
+      <li><a href="#experience" data-sec="experience">Experience</a></li>
       <li><a href="#contact" data-sec="contact">Contact</a></li>
     </ul></nav>
     <button class="burger" type="button" aria-expanded="false" aria-controls="mobnav" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
   <nav class="mob" id="mobnav" aria-label="Mobile">
-    <a href="#intro">Home</a><a href="#work">Work</a><a href="#strategy">Strategy</a><a href="#about">About</a><a href="#contact">Contact</a>
+    <a href="#about">About</a><a href="#work">Projects</a><a href="#experience">Experience</a><a href="#contact">Contact</a>
   </nav>
 </header>
 
@@ -259,13 +258,7 @@
 <section class="sec intro" id="intro" data-label="INTRO">
   <div class="intro-col">
   <h2 class="hero-name rv d1">Nethra Prabhu</h2>
-  <div class="prompt rv d1">
-    <p class="cap">What people ask me</p>
-    <div class="tab">“</div>
-    <div class="box brk"><i></i><i></i><i></i><i></i><span id="typed"></span><span class="caret"></span></div>
-    <p class="next" id="nextq"></p>
-  </div>
-    <ul class="feat rv d2" aria-label="Highlights">
+  <ul class="feat rv d2" aria-label="Highlights">
     <li><span class="num"><b>20+</b><span>sales enablement assets created for a product launch</span></span></li>
     <li><span class="num"><b>4,000+</b><span>employees receiving a learning tool I prototyped</span></span></li>
     <li><span class="num"><b>910+</b><span>people trained in CPR and naloxone use</span></span></li>
@@ -277,22 +270,32 @@
     <p class="sub rv d3">I've broken down clinical trials for sales teams, surgery updates for families, and overdose response for 910+ people. Now I do the same with products: start with who's listening, then explain how it fits in their world.</p>
   </div>
   </div>
-  <a class="scroll brk rv d4" href="#work"><i></i><i></i><i></i><i></i>SCROLL <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 0v11M1 7l4 4 4-4"/></svg></a>
+  <a class="scroll brk rv d4" href="#about"><i></i><i></i><i></i><i></i>SCROLL <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 0v11M1 7l4 4 4-4"/></svg></a>
   <div class="hrule r2"></div>
 </section>
 
-<!-- 2. WORK -->
-<section class="sec work" id="work" data-label="WORK">
+<!-- 2. ABOUT -->
+<section class="sec about" id="about" data-label="ABOUT">
+  <div class="col rv d1">
+    <div class="head"><img src="/headshot.webp" alt="Nethra Prabhu" width="84" height="84"><h2>How I got here</h2></div>
+    <p>I spent years in healthcare as a scribe, medical assistant, patient care tech, and hospital volunteer. Over and over, I was the person explaining something complex to someone who needed it but didn't speak the language: patients, families, volunteers, later sales reps.</p>
+    <p>I also watched good technology fail because nobody explained it well to the people using it. That's the work I want to do. I'm technical enough to build (Next.js, and AI/ML study at UT Austin), which helps me understand the products I explain.</p>
+    <p>I'm based in San Francisco and looking for product marketing and go-to-market roles, including field and customer marketing. Long term, I'm building toward product management.</p>
+  </div>
+</section>
+
+<!-- 3. PROJECTS -->
+<section class="sec work" id="work" data-label="PROJECTS">
   <div class="sec-title rv d1">
     <p class="dots">··</p>
-    <h2><span class="ol">Featured</span> work</h2>
+    <h2><span class="ol">Featured</span> projects</h2>
   </div>
   <div class="tabs rv d2"><div class="track" id="track"></div></div>
   <article class="panel rv d3" id="panel" aria-live="polite"></article>
   <div class="work-nav rv d4"><button class="arrow" id="wPrev" aria-label="Previous project">←</button><button class="arrow" id="wNext" aria-label="Next project">→</button></div>
 </section>
 
-<!-- 3. STRATEGY -->
+<!-- 4. STRATEGY -->
 <section class="sec strategy" id="strategy" data-label="STRATEGY">
   <div class="strip rv d1">
     <span class="tag">HOW I WORK <span class="num brk"><i></i><i></i><i></i><i></i><span id="pNum">01</span></span></span>
@@ -306,14 +309,11 @@
   <p class="ghost" id="pGhost" aria-hidden="true"></p>
 </section>
 
-<!-- 4. ABOUT -->
-<section class="sec about" id="about" data-label="ABOUT">
+<!-- 5. EXPERIENCE -->
+<section class="sec about experience" id="experience" data-label="EXPERIENCE">
   <div class="col rv d1">
-    <div class="head"><img src="/headshot.webp" alt="Nethra Prabhu" width="84" height="84"><h2>How I got here</h2></div>
-    <p>I spent years in healthcare as a scribe, medical assistant, patient care tech, and hospital volunteer. Over and over, I was the person explaining something complex to someone who needed it but didn't speak the language: patients, families, volunteers, later sales reps.</p>
-    <p>I also watched good technology fail because nobody explained it well to the people using it. That's the work I want to do. I'm technical enough to build (Next.js, and AI/ML study at UT Austin), which helps me understand the products I explain.</p>
-    <p>I'm based in San Francisco and looking for product marketing and go-to-market roles, including field and customer marketing. Long term, I'm building toward product management.</p>
-    <ol class="tl">
+    <h2>Experience</h2>
+    <ol class="tl" style="border-top:0;margin-top:8px">
       <li><span class="w">Oct 2026 – now</span><span><b>Technical Product Owner</b><span class="p">Penumbra (contract)</span></span></li>
       <li><span class="w">Aug 2026 – Feb 2027</span><span><b>Post Graduate Program, AI &amp; ML</b><span class="p">UT Austin (online)</span></span></li>
       <li><span class="w">Jul – Sep 2026</span><span><b>Neurovascular Product Marketing Intern</b><span class="p">Penumbra, Alameda</span></span></li>
@@ -326,7 +326,7 @@
   </div>
 </section>
 
-<!-- 5. CONTACT -->
+<!-- 6. CONTACT -->
 <section class="sec contact" id="contact" data-label="CONTACT">
   <div class="inner">
     <p class="coffee rv d1">☕ THE COFFEE'S ON ME</p>
@@ -387,25 +387,7 @@
   spy();
   addEventListener('scroll',spy,{passive:true});
 
-  // typing prompt: questions people bring to me
-  const qs=["What did this clinical trial actually measure?","When can we see her after surgery?","How do I use naloxone if someone overdoses?","What does an AI agent actually do for my team?"];
-  const typed=$('#typed'),next=$('#nextq');let qi=0;
-  const wait=ms=>new Promise(r=>setTimeout(r,ms));
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  async function loop(){
-    while(true){
-      const q=qs[qi];next.textContent=qs[(qi+1)%qs.length];
-      if(reduce){typed.textContent=q;await wait(4000)}
-      else{
-        for(let k=1;k<=q.length;k++){typed.textContent=q.slice(0,k);await wait(38)}
-        await wait(2600);
-        for(let k=q.length;k>=0;k-=2){typed.textContent=q.slice(0,Math.max(0,k));await wait(14)}
-        await wait(250);
-      }
-      qi=(qi+1)%qs.length;
-    }
-  }
-  loop();
 
   // work: tabs + project panel
   const P=[

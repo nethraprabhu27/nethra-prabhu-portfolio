@@ -36,11 +36,16 @@
   header.top{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:30;width:max-content;max-width:calc(100% - 24px);background:rgba(251,248,243,.72);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border:1px solid rgba(221,209,191,.85);border-radius:999px;box-shadow:0 12px 32px -16px rgba(22,20,18,.35)}
   .bar-in{display:flex;align-items:center;gap:20px;height:56px;padding:0 12px}
   .mark{text-decoration:none;font-weight:800;font-size:15px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
-  .menu{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+  .menu{display:flex;gap:4px;list-style:none;margin:0;padding:0;position:relative;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+  .menu.dragging{cursor:grabbing}
+  .menu .thumb{position:absolute;top:0;bottom:0;left:0;width:0;border-radius:999px;background:rgba(201,169,122,.35);box-shadow:inset 0 0 0 1px rgba(156,113,64,.35);transition:left .35s cubic-bezier(.3,.8,.3,1),width .35s cubic-bezier(.3,.8,.3,1),opacity .3s;opacity:0;pointer-events:none}
+  .menu.dragging .thumb{transition:none}
+  .menu li{position:relative;z-index:1}
+  .menu a{-webkit-user-drag:none}
   .menu a{position:relative;text-decoration:none;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:10px 14px;border-radius:999px;display:inline-block}
   .menu a:hover{background:rgba(233,220,199,.6)}
   .menu a.active{color:var(--cite)}
-  .menu a.active::after{content:"";position:absolute;left:14px;right:14px;bottom:4px;height:2px;background:var(--accent);border-radius:2px}
+  
   .resume{text-decoration:none;font-weight:600;font-size:14px;letter-spacing:.04em;text-transform:uppercase;border:1.5px solid var(--ink);padding:8px 18px;border-radius:999px}
   .resume:hover{background:var(--ink);color:var(--surface)}
   .burger{all:unset;display:none;cursor:pointer;width:40px;height:40px;align-items:center;justify-content:center}
@@ -227,7 +232,7 @@
 
 <header class="top" id="top">
   <div class="bar-in">
-    <nav aria-label="Main"><ul class="menu">
+    <nav aria-label="Main"><ul class="menu" title="Click, or hold and drag to move between sections"><span class="thumb" aria-hidden="true"></span>
       <li><a href="#work" data-sec="work">Work</a></li>
       <li><a href="#strategy" data-sec="strategy">Strategy</a></li>
       <li><a href="#about" data-sec="about">About</a></li>
@@ -353,8 +358,33 @@
     let cur=secs[0];secs.forEach(s=>{const r=s.getBoundingClientRect();if(r.top<innerHeight*.5)cur=s});
     const i=secs.indexOf(cur);labT.textContent=cur.dataset.label;lab.style.top=(i/(secs.length-1)*78)+'%';
     links.forEach(a=>a.classList.toggle('active',a.dataset.sec===cur.id));
+    if(!dragging)placeThumb(links.findIndex(a=>a.dataset.sec===cur.id));
   }
-  addEventListener('scroll',spy,{passive:true});spy();
+  // pill: hold and drag across the menu to scrub through the page
+  const menu=$('.menu'),thumb=menu.querySelector('.thumb');let dragging=false,moved=false,startX=0;
+  function geo(){const m=menu.getBoundingClientRect();return links.map(a=>{const r=a.getBoundingClientRect();return{l:r.left-m.left,w:r.width,c:r.left-m.left+r.width/2}})}
+  function placeThumb(i){if(i<0){thumb.style.opacity=0;return}const g=geo()[i];thumb.style.opacity=1;thumb.style.left=g.l+'px';thumb.style.width=g.w+'px'}
+  function scrub(clientX){
+    const g=geo(),x=clientX-menu.getBoundingClientRect().left;
+    let k=0;while(k<g.length-2&&x>g[k+1].c)k++;
+    const f=Math.max(0,Math.min(1,(x-g[k].c)/(g[k+1].c-g[k].c)));
+    const fx=x<g[0].c?0:x>g[g.length-1].c?1:f, kk=x<g[0].c?0:x>g[g.length-1].c?g.length-2:k;
+    thumb.style.opacity=1;thumb.style.left=(g[kk].l+(g[kk+1].l-g[kk].l)*fx)+'px';thumb.style.width=(g[kk].w+(g[kk+1].w-g[kk].w)*fx)+'px';
+    const t=links.map(a=>document.getElementById(a.dataset.sec).offsetTop);
+    window.scrollTo({top:t[kk]+(t[kk+1]-t[kk])*fx,behavior:'instant'});
+    return fx<.5?kk:kk+1;
+  }
+  let nearest=0;
+  menu.addEventListener('pointerdown',e=>{if(e.button!==0)return;dragging=true;moved=false;startX=e.clientX;menu.setPointerCapture(e.pointerId)});
+  menu.addEventListener('pointermove',e=>{if(!dragging)return;if(!moved&&Math.abs(e.clientX-startX)<6)return;moved=true;menu.classList.add('dragging');nearest=scrub(e.clientX)});
+  function end(e){if(!dragging)return;dragging=false;menu.classList.remove('dragging');
+    if(moved){document.getElementById(links[nearest].dataset.sec).scrollIntoView({behavior:'smooth'});placeThumb(nearest)}
+    else{const el=document.elementFromPoint(e.clientX,e.clientY);const a=el&&el.closest&&el.closest('.menu a');if(a)document.getElementById(a.dataset.sec).scrollIntoView({behavior:'smooth'})}}
+  menu.addEventListener('pointerup',end);menu.addEventListener('pointercancel',end);
+  links.forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+  addEventListener('resize',()=>spy());
+  spy();
+  addEventListener('scroll',spy,{passive:true});
 
   // typing prompt: questions people bring to me
   const qs=["What did this clinical trial actually measure?","When can we see her after surgery?","How do I use naloxone if someone overdoses?","What does an AI agent actually do for my team?"];

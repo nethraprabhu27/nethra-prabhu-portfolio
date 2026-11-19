@@ -430,6 +430,20 @@
   setP(0,true);
 })();
 </script>
+<script>
+// ?debug shows the 3D robot's loading status on the page
+(function(){
+  if(!/[?&]debug/.test(location.search))return;
+  const b=document.createElement('div');b.id='dbg';
+  b.style.cssText='position:fixed;left:10px;bottom:10px;z-index:99;max-width:min(560px,90vw);background:#161412;color:#F3ECE1;font:12px/1.4 monospace;padding:10px 12px;border-radius:6px;white-space:pre-wrap';
+  b.textContent='robot: page loaded, waiting for 3D library...';
+  window.__dbg=m=>{b.textContent+='\n'+m};
+  addEventListener('DOMContentLoaded',()=>document.body.appendChild(b));
+  addEventListener('error',e=>window.__dbg('ERROR: '+(e.message||(e.target&&e.target.src)||'resource failed')),true);
+  addEventListener('unhandledrejection',e=>window.__dbg('ERROR: '+(e.reason&&e.reason.message||e.reason)));
+  const c=document.createElement('canvas');window.__dbg('WebGL available: '+!!(c.getContext('webgl2')||c.getContext('webgl')));
+})();
+</script>
 <script type="module" src="/robot.js"></script>
 </body>
 </html>

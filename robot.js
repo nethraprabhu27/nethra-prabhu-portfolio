@@ -5,6 +5,9 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
+const dbg = m => { if (window.__dbg) window.__dbg(m); };
+dbg('3D library loaded (three r' + THREE.REVISION + ')');
+
 const canvas = document.getElementById('bot');
 
 function start() {
@@ -233,6 +236,7 @@ function start() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clock = new THREE.Clock();
 
+  const safeFrameRef = { fn: null };
   function frame() {
     const t = clock.getElapsedTime();
     const target = scrollP();
@@ -282,10 +286,13 @@ function start() {
     drawFace();
 
     renderer.render(scene, camera);
-    requestAnimationFrame(frame);
+    requestAnimationFrame(safeFrameRef.fn);
   }
   drawFace();
-  requestAnimationFrame(frame);
+  dbg('robot built, starting animation');
+  let first = true;
+  const safeFrame = safeFrameRef.fn = () => { try { frame(); if (first) { first = false; dbg('first frame rendered OK'); } } catch (e) { dbg('ERROR in animation: ' + e.message); console.error(e); } };
+  requestAnimationFrame(safeFrame);
 }
 
-try { start(); } catch (err) { console.warn('3D robot unavailable:', err); if (canvas) canvas.style.display = 'none'; }
+try { start(); } catch (err) { dbg('ERROR starting robot: ' + err.message); console.warn('3D robot unavailable:', err); if (canvas) canvas.style.display = 'none'; }

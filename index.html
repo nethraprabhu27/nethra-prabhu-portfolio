@@ -268,6 +268,21 @@
   .edge-guide::before,.edge-guide::after{content:"";position:absolute;top:0;bottom:0;width:max(0px,calc((100% - 1064px) / 2 - 1cm - 2in));background:var(--accent)}
   .edge-guide::before{left:0}
   .edge-guide::after{right:0}
+  /* compact project cards */
+  .proj{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:36px 40px;margin-top:24px}
+  .proj:first-of-type{margin-top:0}
+  .proj-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+  .proj h3{font-size:clamp(24px,2.4vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.15}
+  .proj .cat{color:var(--accent);font-weight:500;font-size:15.5px;margin:6px 0 0}
+  .badge{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--rule);padding:5px 11px;border-radius:6px;color:var(--muted);white-space:nowrap}
+  .badge.active{border-color:var(--accent);color:var(--cite);background:var(--accent-wash)}
+  .proj .one{font-size:clamp(17px,1.5vw,19px);font-weight:500;margin:18px 0 12px}
+  .proj ul{margin:0;padding-left:20px}
+  .proj li{margin:6px 0}
+  .proj li::marker{color:var(--accent)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding-top:20px;border-top:1px solid var(--rule)}
+  .chips span{font-size:13.5px;padding:5px 11px;border:1px solid var(--rule);border-radius:6px;background:var(--paper)}
+  @media (max-width:620px){.proj{padding:26px 22px}.proj-head{flex-direction:column-reverse;gap:10px}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
   @media (max-width:900px){
@@ -345,131 +360,71 @@
       <h2>Featured work</h2>
     </div>
 
-    <article class="case" id="hub">
-      <div class="case-top">
-        <div>
-          <span class="tag">Product marketing + product</span>
-          <h3>Clinical Education Hub</h3>
-          <p class="sum">Sales reps asked for AI summaries of clinical studies. Talking with them showed the real problem: they couldn't find the evidence they already had, didn't have time to read it, and couldn't learn from it in the formats it came in. So I built a platform that turns dense research into something reps can use in minutes.</p>
-        </div>
-        <dl class="facts">
-          <div><dt>Company</dt><dd>Penumbra, Inc. (medical devices)</dd></div>
-          <div><dt>My role</dt><dd>Researcher, designer, builder, now technical product owner</dd></div>
-          <div><dt>Timeline</dt><dd>Jul 2026 to now</dd></div>
-          <div><dt>Built with</dt><dd>Next.js, React, Supabase, AI-assisted development</dd></div>
-        </dl>
+    <article class="proj" id="hub">
+      <div class="proj-head">
+        <div><h3>Clinical Education Hub</h3><p class="cat">Product marketing + product · Penumbra, 2026 to now</p></div>
+        <span class="badge active">Active</span>
       </div>
-      <div class="proof">
-        <div><b>40+</b><span>reps interviewed</span></div>
-        <div><b>4 days</b><span>from idea to working prototype</span></div>
-        <div><b>4,000+</b><span>employees getting a platform based on it</span></div>
-      </div>
-      <div class="story">
-        <div class="step">
-          <h4>The request<small>What I was asked for</small></h4>
-          <div class="body"><p>AI summaries of dense clinical studies, so reps could get through them faster.</p></div>
-        </div>
-        <div class="step">
-          <h4>The real problem<small>What reps told me</small></h4>
-          <div class="body"><p>I interviewed 40+ reps, ran field surveys, audited the ShowPad content library, and sat in on sales training. The content was accurate, but reps couldn't find it, save it, or learn from it on the road. More AI summaries on top of hard-to-find content wouldn't fix that.</p></div>
-        </div>
-        <div class="step">
-          <h4>What I built<small>Made for reps' time</small></h4>
-          <div class="body"><p>A searchable library with short summaries that cite their sources, audio versions for the car, and illustrated notes and flashcards for different learning styles. I kept AI out of the first version so it would build on content reps already trusted.</p></div>
-        </div>
-        <div class="step">
-          <h4>The outcome<small>What happened next</small></h4>
-          <div class="body"><p>Leadership chose to build a company-wide version for 4,000+ sales and marketing employees, based on my prototype, and hired me on contract as its technical product owner.</p></div>
-        </div>
-        <div class="step">
-          <h4>The AI layer<small>What I'm building now</small></h4>
-          <div class="body"><p>Semantic search and an evidence assistant that cites its sources and says so when the evidence is thin. Success is measured by how fast reps find evidence and how accurate the citations are.</p></div>
-        </div>
-      </div>
+      <p class="one">A learning platform that turns dense clinical research into something sales reps can use in minutes.</p>
+      <ul>
+          <li>Interviewed <b>40+</b> reps and audited the ShowPad library to find the real problem: reps couldn't find or use the evidence they already had</li>
+          <li>Built a working prototype in <b>4 days</b>, with cited summaries, audio briefings, illustrated notes, and flashcards</li>
+          <li>Penumbra is now building a version for <b>4,000+</b> employees based on it, with me as technical product owner adding AI search and a citation-grounded assistant</li>
+      </ul>
+      <div class="chips"><span>User research</span><span>Sales enablement</span><span>Next.js</span><span>Supabase</span><span>AI features</span></div>
     </article>
-
-    <article class="case" id="launch" style="margin-top:24px">
-      <div class="case-top">
-        <div>
-          <span class="tag">Product marketing</span>
-          <h3>Launching THUNDERBOLT to the sales team</h3>
-          <p class="sum">Penumbra was launching a computer-assisted clot-removal device. Reps had to explain it to neurointerventionalists, some of the most expert buyers in medicine. I helped turn trial data and engineering detail into stories they could use. Those same rep conversations led to the Clinical Education Hub.</p>
-        </div>
-        <dl class="facts">
-          <div><dt>Company</dt><dd>Penumbra, Inc. (medical devices)</dd></div>
-          <div><dt>My role</dt><dd>Neurovascular Product Marketing Intern</dd></div>
-          <div><dt>Timeline</dt><dd>Jul to Sep 2026</dd></div>
-          <div><dt>Audience</dt><dd>70+ neurovascular sales reps</dd></div>
-        </dl>
+    <article class="proj" id="launch">
+      <div class="proj-head">
+        <div><h3>THUNDERBOLT launch</h3><p class="cat">Product marketing · Penumbra, 2026</p></div>
+        <span class="badge">Completed</span>
       </div>
-      <div class="proof">
-        <div><b>40+</b><span>reps interviewed</span></div>
-        <div><b>20+</b><span>enablement assets built</span></div>
-        <div><b>70+</b><span>reps equipped</span></div>
-      </div>
-      <div class="story">
-        <div class="step">
-          <h4>The audience<small>Who had to understand it</small></h4>
-          <div class="body">
-          <p>Sales reps who needed to hold their own with physicians, explaining what a new technology does and what the clinical data says.</p>
-          </div>
-        </div>
-        <div class="step">
-          <h4>Learning their world<small>Before writing anything</small></h4>
-          <div class="body">
-          <p>I talked with 40+ reps about what they needed, audited the ShowPad library for outdated and missing material, and went through R&amp;D's technical training on the full neurovascular portfolio.</p>
-          </div>
-        </div>
-        <div class="step">
-          <h4>What I made<small>Translation, not simplification</small></h4>
-          <div class="body">
-          <ul>
-            <li>Evidence-based sales messaging, co-developed with the marketing team from clinical trial data</li>
-            <li>20+ assets covering disease-state education, product value, and competitive positioning</li>
-            <li>Device functionality and troubleshooting explained in the language reps use with physicians</li>
-          </ul>
-          </div>
-        </div>
-      </div>
+      <p class="one">Launch materials that helped 70+ reps explain a computer-assisted clot-removal device to neurointerventionalists.</p>
+      <ul>
+          <li>Co-developed evidence-based sales messaging from clinical trial data</li>
+          <li>Built <b>20+</b> assets covering disease-state education, product value, and competitive positioning</li>
+          <li>Turned R&amp;D training on device function and troubleshooting into the language reps use with physicians</li>
+      </ul>
+      <div class="chips"><span>Product launch</span><span>Sales enablement</span><span>Messaging</span><span>Competitive positioning</span></div>
     </article>
-
-    <div class="more">
-      <article class="work wide" id="medcity">
-        <div>
-          <span class="tag">Customer communication</span>
-          <h3>Medical City Dallas</h3>
-          <p class="meta">Day Captain, then VP of the Auxiliary Board, 2023–2026</p>
-          <p>Families waiting on surgery didn't know the vocabulary, the departments, or where to go first. I was the person between them and the clinical team, turning updates into plain language and getting them where they needed to be.</p>
-        </div>
-        <ul>
+    <article class="proj" id="medcity">
+      <div class="proj-head">
+        <div><h3>Medical City Dallas</h3><p class="cat">Customer communication · Day Captain, then VP of the Auxiliary Board, 2023–2026</p></div>
+        <span class="badge">Completed</span>
+      </div>
+      <p class="one">The go-between for surgical staff and waiting families, then a leader of the hospital's volunteer board.</p>
+      <ul>
           <li>Turned surgical updates into plain language for anxious families in Adult Day Surgery</li>
-          <li>Guided people through departments they didn't know, in the order they needed them</li>
-          <li>As VP, connected hospital leadership with volunteers and brought in <b>200+</b> new volunteers and event attendees</li>
-        </ul>
-      </article>
-
-      <article class="work" id="events">
-        <span class="tag">Events and field programs</span>
-        <h3>End Overdose, first Texas chapter</h3>
-        <p class="meta">Marketing director and lead trainer, 2023–2024</p>
-        <ul>
+          <li>Guided families through departments they didn't know, in the order they needed them</li>
+          <li>Grew volunteer event attendance <b>6x</b> and brought in <b>200+</b> new volunteers and attendees</li>
+      </ul>
+      <div class="chips"><span>Customer communication</span><span>Event marketing</span><span>Leadership</span></div>
+    </article>
+    <article class="proj" id="events">
+      <div class="proj-head">
+        <div><h3>End Overdose, first Texas chapter</h3><p class="cat">Events and field programs · Marketing director and lead trainer, 2023–2024</p></div>
+        <span class="badge">Completed</span>
+      </div>
+      <p class="one">Launched and marketed the first Texas chapter of a national overdose-response organization.</p>
+      <ul>
           <li>Ran multi-channel campaigns and trainings at community and large public events, including concerts</li>
-          <li>Trained <b>910+</b> people and distributed <b>918+</b> naloxone doses</li>
+          <li>Trained <b>910+</b> people in CPR and naloxone use and distributed <b>918+</b> naloxone doses</li>
           <li>Managed procurement and logistics so trainings could scale</li>
-        </ul>
-      </article>
-
-      <article class="work" id="growth">
-        <span class="tag">Event marketing and growth</span>
-        <h3>Accessible Prosthetics Initiative</h3>
-        <p class="meta">Communications and outreach lead, 2023–2026</p>
-        <ul>
-          <li>Led event marketing and volunteers at <b>Abilities Expo 2024</b> to reach patients and clinicians</li>
+      </ul>
+      <div class="chips"><span>Field marketing</span><span>Events</span><span>Campaigns</span><span>Training</span></div>
+    </article>
+    <article class="proj" id="growth">
+      <div class="proj-head">
+        <div><h3>Accessible Prosthetics Initiative</h3><p class="cat">Product marketing + growth · Communications and outreach lead, 2023–2026</p></div>
+        <span class="badge">Completed</span>
+      </div>
+      <p class="one">Showed amputees what custom 3D-printed prosthetics could do for them, at almost no cost.</p>
+      <ul>
+          <li>Translated engineering features into personal benefits for patients and clinicians</li>
+          <li>Led event marketing and volunteers at <b>Abilities Expo 2024</b></li>
           <li>Grew membership <b>5x</b> and raised <b>$2,000+</b> in 4 months with a 10-person team</li>
-          <li>Organized workshops with assistive-tech professionals and partner organizations</li>
-        </ul>
-      </article>
-    </div>
+      </ul>
+      <div class="chips"><span>Product marketing</span><span>Event marketing</span><span>Partnerships</span><span>Growth</span></div>
+    </article>
   </div>
 </section>
 
